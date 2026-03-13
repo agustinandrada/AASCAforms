@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Médica (Form. 04) - AASCA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Form specific styles */
+        .form-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .form-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="tel"],
+        select,
+        textarea {
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(46, 125, 50, 0.2);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .yes-no-group {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: rgba(46, 125, 50, 0.05);
+            padding: 0.8rem;
+            border-radius: 8px;
+        }
+
+        .question-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(46, 125, 50, 0.1);
+        }
+
+        .question-text {
+            flex: 1;
+            padding-right: 2rem;
+        }
+
+        .actions {
+            position: sticky;
+            bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 4rem;
+            z-index: 100;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(46, 125, 50, 0.2);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            background: var(--primary-light);
+        }
+
+        /* Print Utilities */
+        @media print {
+            .actions, header, footer { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .form-container { 
+                box-shadow: none !important; 
+                margin: 0 !important; 
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+            .form-header { border-bottom: 1px solid black; }
+            input, textarea { border: none; border-bottom: 1px dotted black; }
+            .section-title { color: black; border-left: 1px solid black; }
+            .page-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <div class="header-top container">
+            <span class="official-text">ASOCIACIÓN ARQUIDIOCESANA DE SCOUTISMO CATÓLICO ARGENTINO</span>
+        </div>
+        <nav class="container">
+            <div class="logo">
+                <a href="../index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem;">
+                    <span class="logo-icon">⚜️</span>
+                    <div class="logo-text">
+                        <span class="logo-main">A.A.S.C.A.</span>
+                        <span class="logo-sub">Gestión de Formularios</span>
+                    </div>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>FICHA MÉDICA</h1>
+                <p>(Form. 04)</p>
+                <p>Completar con letra imprenta clara</p>
+            </div>
+
+            <form id="medical-form">
+                <!-- Datos Personales -->
+                <section class="form-section">
+                    <h2 class="section-title">Datos del Participante</h2>
+                    <div class="input-group">
+                        <div class="field">
+                            <label for="fecha">Fecha</label>
+                            <input type="date" id="fecha" name="fecha">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="field">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" name="nombre">
+                        </div>
+                        <div class="field">
+                            <label for="apellido">Apellido</label>
+                            <input type="text" id="apellido" name="apellido">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="field">
+                            <label for="nacimiento">Fecha de Nacimiento</label>
+                            <input type="text" id="nacimiento" name="nacimiento" placeholder="DD/MM/AAAA">
+                        </div>
+                        <div class="field">
+                            <label for="dni">DNI</label>
+                            <input type="text" id="dni" name="dni">
+                        </div>
+                        <div class="field">
+                            <label>Sexo</label>
+                            <div class="yes-no-group">
+                                <label><input type="radio" name="sexo" value="M"> M</label>
+                                <label><input type="radio" name="sexo" value="F"> F</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="field" style="grid-column: span 2;">
+                            <label for="domicilio">Domicilio</label>
+                            <input type="text" id="domicilio" name="domicilio">
+                        </div>
+                        <div class="field">
+                            <label for="localidad">Localidad</label>
+                            <input type="text" id="localidad" name="localidad">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="field">
+                            <label for="edad">Edad</label>
+                            <input type="number" id="edad" name="edad">
+                        </div>
+                        <div class="field">
+                            <label for="estatura">Estatura (m)</label>
+                            <input type="text" id="estatura" name="estatura">
+                        </div>
+                        <div class="field">
+                            <label for="peso">Peso (kg)</label>
+                            <input type="text" id="peso" name="peso">
+                        </div>
+                        <div class="field">
+                            <label for="grupo-sangre">Grupo Sanguíneo</label>
+                            <input type="text" id="grupo-sangre" name="grupo-sangre">
+                        </div>
+                        <div class="field">
+                            <label for="factor">Factor</label>
+                            <input type="text" id="factor" name="factor">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Emergencias -->
+                <section class="form-section">
+                    <h2 class="section-title">Teléfonos de Urgencia</h2>
+                    <div id="emergency-contacts">
+                        <div class="input-group">
+                            <div class="field">
+                                <label>Teléfono</label>
+                                <input type="tel" name="emergency-phone[]">
+                            </div>
+                            <div class="field">
+                                <label>Nombre y Apellido</label>
+                                <input type="text" name="emergency-name[]">
+                            </div>
+                            <div class="field">
+                                <label>Parentesco</label>
+                                <input type="text" name="emergency-relation[]">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="field">
+                                <input type="tel" name="emergency-phone[]">
+                            </div>
+                            <div class="field">
+                                <input type="text" name="emergency-name[]">
+                            </div>
+                            <div class="field">
+                                <input type="text" name="emergency-relation[]">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Obra Social -->
+                <section class="form-section">
+                    <h2 class="section-title">Obra Social</h2>
+                    <div class="input-group">
+                        <div class="field">
+                            <label for="obra-social">Nombre Obra Social</label>
+                            <input type="text" id="obra-social" name="obra-social">
+                        </div>
+                        <div class="field">
+                            <label for="afiliado">Nº de Afiliado</label>
+                            <input type="text" id="afiliado" name="afiliado">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="field">
+                            <label for="os-domicilio">Domicilio</label>
+                            <input type="text" id="os-domicilio" name="os-domicilio">
+                        </div>
+                        <div class="field">
+                            <label for="os-telefono">Teléfono</label>
+                            <input type="tel" id="os-telefono" name="os-telefono">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cuestionario Padres -->
+                <section class="form-section page-break">
+                    <h2 class="section-title">Datos a ser completados por Padres/Tutor</h2>
+                    <p style="font-size: 0.85rem; margin-bottom: 1.5rem; opacity: 0.8;">Por favor conteste las siguientes preguntas, explique en caso de responder afirmativamente:</p>
+                    
+                    <div class="question-row">
+                        <span class="question-text">¿Sabe nadar?</span>
+                        <div class="yes-no-group">
+                            <label><input type="radio" name="nada" value="SI"> SI</label>
+                            <label><input type="radio" name="nada" value="NO"> NO</label>
+                        </div>
+                    </div>
+
+                    <div class="question-row">
+                        <div class="field" style="width: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="question-text">¿Usa lentes, lentes de contacto, prótesis dentales o aparatos dentales?</span>
+                                <div class="yes-no-group">
+                                    <label><input type="radio" name="lentes" value="SI"> SI</label>
+                                    <label><input type="radio" name="lentes" value="NO"> NO</label>
+                                </div>
+                            </div>
+                            <label style="margin-top: 0.5rem;">Indicaciones:</label>
+                            <textarea name="lentes-indicaciones" rows="1"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="question-row">
+                        <div class="field" style="width: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="question-text">¿Padece de alguna condición o problema ortopédico, de articulaciones, óseo o es susceptible a fracturas?</span>
+                                <div class="yes-no-group">
+                                    <label><input type="radio" name="ortopedico" value="SI"> SI</label>
+                                    <label><input type="radio" name="ortopedico" value="NO"> NO</label>
+                                </div>
+                            </div>
+                            <label style="margin-top: 0.5rem;">Indicaciones:</label>
+                            <textarea name="ortopedico-indicaciones" rows="1"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Repetir para más preguntas del formulario... -->
+                    
+                    <div class="question-row">
+                        <div class="field" style="width: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="question-text">¿Es alérgico a:</span>
+                                <div class="checkbox-group" style="flex-wrap: wrap; justify-content: flex-end;">
+                                    <label><input type="checkbox" name="al-comidas"> Comidas</label>
+                                    <label><input type="checkbox" name="al-medicamentos"> Medicamentos</label>
+                                    <label><input type="checkbox" name="al-antibioticos"> Antibióticos</label>
+                                    <label><input type="checkbox" name="al-insectos"> Picaduras insectos</label>
+                                    <label><input type="checkbox" name="al-polvo"> Polvo, polen</label>
+                                    <label><input type="checkbox" name="al-plumas"> Plumas</label>
+                                </div>
+                            </div>
+                            <label style="margin-top: 0.5rem;">Otros / Detalles:</label>
+                            <textarea name="alergias-detalles" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="field">
+                            <label>¿Tuvo alguna intervención quirúrgica? (Apendicitis, Hernia, etc.)</label>
+                            <input type="text" name="intervencion-quiro" placeholder="Tipo y Fecha">
+                        </div>
+                    </div>
+
+                    <div class="question-row">
+                        <div class="field" style="width: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="question-text">¿Es diabético?</span>
+                                <div class="yes-no-group">
+                                    <label><input type="radio" name="diabetico" value="SI"> SI</label>
+                                    <label><input type="radio" name="diabetico" value="NO"> NO</label>
+                                </div>
+                            </div>
+                            <label>Dosis de insulina:</label>
+                            <input type="text" name="insulina">
+                        </div>
+                    </div>
+
+                    <div class="question-row">
+                        <div class="field" style="width: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="question-text">¿Es asmático?</span>
+                                <div class="yes-no-group">
+                                    <label><input type="radio" name="asmatico" value="SI"> SI</label>
+                                    <label><input type="radio" name="asmatico" value="NO"> NO</label>
+                                </div>
+                            </div>
+                            <div class="input-group" style="margin-top: 0.5rem;">
+                                <div class="field"><label>Medicamento:</label><input type="text" name="asma-med"></div>
+                                <div class="field"><label>Frecuencia:</label><input type="text" name="asma-freq"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Historia de Enfermedades -->
+                <section class="form-section page-break">
+                    <h2 class="section-title">Historia Médica Detallada</h2>
+                    <p style="font-size: 0.85rem; margin-bottom: 1rem;">Marque si ha padecido o padece:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                        <div class="condition-list">
+                            <h4 style="margin-bottom: 0.5rem; text-decoration: underline;">Antecedentes Respiratorios</h4>
+                            <label class="checkbox-group"><input type="checkbox"> Bronquitis</label>
+                            <label class="checkbox-group"><input type="checkbox"> Asma</label>
+                            <label class="checkbox-group"><input type="checkbox"> Neumonía</label>
+                            <label class="checkbox-group"><input type="checkbox"> Alergias respiratorias</label>
+                            <label class="checkbox-group"><input type="checkbox"> Sinusitis</label>
+                        </div>
+                        <div class="condition-list">
+                            <h4 style="margin-bottom: 0.5rem; text-decoration: underline;">Antecedentes Cardiovasculares</h4>
+                            <label class="checkbox-group"><input type="checkbox"> Arritmia</label>
+                            <label class="checkbox-group"><input type="checkbox"> Presión Alta / Baja</label>
+                            <label class="checkbox-group"><input type="checkbox"> Soplos</label>
+                            <label class="checkbox-group"><input type="checkbox"> Palpitaciones</label>
+                        </div>
+                        <div class="condition-list">
+                            <h4 style="margin-bottom: 0.5rem; text-decoration: underline;">Otros Antecedentes</h4>
+                            <label class="checkbox-group"><input type="checkbox"> Gastritis / Diarreas</label>
+                            <label class="checkbox-group"><input type="checkbox"> Celíaco</label>
+                            <label class="checkbox-group"><input type="checkbox"> Convulsiones / Epilepsia</label>
+                            <label class="checkbox-group"><input type="checkbox"> Diabetes</label>
+                            <label class="checkbox-group"><input type="checkbox"> Depresión / Ansiedad</label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Datos Médicos (Profesional) -->
+                <section class="form-section page-break">
+                    <h2 class="section-title">Datos a ser completados por el Médico de Cabecera</h2>
+                    <div class="input-group">
+                        <div class="field"><label>Pulso</label><input type="text" name="pulso"></div>
+                        <div class="field"><label>Tensión Arterial</label><input type="text" name="tension"></div>
+                    </div>
+                    <div class="field">
+                        <label>Auscultación / Examen Físico General:</label>
+                        <textarea name="examen-fisico" rows="4"></textarea>
+                    </div>
+                    <div class="input-group" style="margin-top: 1rem;">
+                        <div class="field">
+                            <label>Caries:</label>
+                            <div class="yes-no-group">
+                                <label><input type="radio" name="caries" value="SI"> SI</label>
+                                <label><input type="radio" name="caries" value="NO"> NO</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Faltan piezas dentales:</label>
+                            <div class="yes-no-group">
+                                <label><input type="radio" name="faltan-dientes" value="SI"> SI</label>
+                                <label><input type="radio" name="faltan-dientes" value="NO"> NO</label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Firmas -->
+                <section class="form-section page-break">
+                    <h2 class="section-title">Firmas y Autorizaciones</h2>
+                    <div class="input-group" style="margin-top: 4rem; text-align: center;">
+                        <div class="field">
+                            <div style="border-top: 1px solid var(--text-color); padding-top: 0.5rem; margin-top: 2rem;">
+                                F. Madre/Tutora (Aclaración y DNI)
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div style="border-top: 1px solid var(--text-color); padding-top: 0.5rem; margin-top: 2rem;">
+                                F. Padre/Tutor (Aclaración y DNI)
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div style="border-top: 1px solid var(--text-color); padding-top: 0.5rem; margin-top: 2rem;">
+                                Firma y Sello Profesional (Matrícula)
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="actions">
+                    <button type="button" class="btn-primary" onclick="prepareAndPrint()">Imprimir Ficha</button>
+                    <button type="button" class="btn-primary" style="background: var(--accent-color);" onclick="window.location.href='../index.html'">Volver al Inicio</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PRINT ONLY LAYOUT (Matches original scanned document) -->
+        <div id="print-layout" class="print-only">
+            <!-- PAGE 1 -->
+            <div class="print-page">
+                <div class="p-header">
+                    <div class="p-header-top">
+                        <div class="p-logo" style="color: #ffd700; filter: drop-shadow(0 0 1pt #000);"></div>
+                        <div class="p-header-text">
+                            <strong>ASOCIACIÓN ARQUIDIOCESANA DE SCOUTISMO CATÓLICO ARGENTINO</strong><br>
+                            <span class="p-header-heavy">A. A. S. C. A.</span><br>
+                            <span class="p-header-small">Fundada por Decreto Canónico Nº 63/96 del 30/XI/96 - Arquidiócesis de Santa Fe de la Vera Cruz</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="p-title-section">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <h2 class="p-form-title">FICHA MÉDICA</h2>
+                        <h2 class="p-form-id">(Form. 04)</h2>
+                    </div>
+                    <p class="p-subtitle">Completar con letra imprenta clara</p>
+                    <div class="p-date-row">
+                        Fecha: <span id="p-fecha">____ / ____ / ________</span>
+                    </div>
+                </div>
+
+                <p class="p-disclaimer">
+                    La Ficha Médica que usted se dispone a llenar y que acompañará a su hijo/paciente durante acantonamientos, campamentos o salidas, contempla una serie de datos y antecedentes que orientarán eficazmente al médico actuante en caso de necesidad. La veracidad y amplitud con que usted responda al cuestionario que sigue, hará más rápido y efectivo el diagnóstico y posterior tratamiento de cualquier dolencia que se manifieste en las actividades diarias y campamentos.
+                </p>
+
+                <div class="p-personal-data">
+                    <div class="p-row">
+                        Nombre: <span class="p-val" id="p-nombre" style="width: 250px;"></span>
+                        Apellido: <span class="p-val" id="p-apellido" style="width: 250px;"></span>
+                    </div>
+                    <div class="p-row">
+                        Fecha de Nacimiento: <span class="p-val" id="p-nacimiento" style="width: 150px;"></span>
+                        DNI: <span class="p-val" id="p-dni" style="width: 200px;"></span>
+                        Sexo: <span class="p-val" id="p-sexo" style="width: 50px;"></span>
+                    </div>
+                    <div class="p-row">
+                        Domicilio: <span class="p-val" id="p-domicilio" style="width: 300px;"></span>
+                        Localidad: <span class="p-val" id="p-localidad" style="width: 200px;"></span>
+                    </div>
+                    <div class="p-row">
+                        Edad: <span class="p-val" id="p-edad" style="width: 80px;"></span>
+                        Estatura (m): <span class="p-val" id="p-estatura" style="width: 80px;"></span>
+                        Peso (kg): <span class="p-val" id="p-peso" style="width: 80px;"></span>
+                        GRUPO SANGUÍNEO: <span class="p-val" id="p-grupo-sangre" style="width: 100px;"></span>
+                        Factor: <span class="p-val" id="p-factor" style="width: 50px;"></span>
+                    </div>
+                </div>
+
+                <table class="p-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Teléfono/s de urgencia</th>
+                            <th style="width: 40%;">Nombre y Apellido</th>
+                            <th style="width: 30%;">Parentesco</th>
+                        </tr>
+                    </thead>
+                    <tbody id="p-emergency-body">
+                        <tr><td><span class="p-val-full" id="p-e-tel-0"></span></td><td><span class="p-val-full" id="p-e-nom-0"></span></td><td><span class="p-val-full" id="p-e-par-0"></span></td></tr>
+                        <tr><td><span class="p-val-full" id="p-e-tel-1"></span></td><td><span class="p-val-full" id="p-e-nom-1"></span></td><td><span class="p-val-full" id="p-e-par-1"></span></td></tr>
+                    </tbody>
+                </table>
+
+                <div class="p-insurance p-personal-data">
+                    <div class="p-row">
+                        Obra Social: <span class="p-val" id="p-obra-social" style="width: 400px;"></span>
+                        N.º de Afiliado: <span class="p-val" id="p-afiliado" style="width: 150px;"></span>
+                    </div>
+                    <div class="p-row">
+                        Domicilio: <span class="p-val" id="p-os-domicilio" style="width: 400px;"></span>
+                        Teléfono: <span class="p-val" id="p-os-telefono" style="width: 150px;"></span>
+                    </div>
+                </div>
+
+                <div class="p-legal-box">
+                    Los abajo firmantes nos responsabilizamos de la veracidad de los datos de esta ficha, la cual es una declaración jurada y tiene validez por un año. NOS COMPROMETEMOS A NOTIFICAR CUALQUIER MODIFICACIÓN QUE OCURRA DENTRO DE ESTE TIEMPO DE VALIDEZ. Asimismo, autorizamos a los Dirigentes Scouts a tomar decisiones médicas basadas en estos datos en caso que fuere necesario, no haciéndolos responsables de las consecuencias de las decisiones basadas en ellos en caso de faltar, ser falsos o inexactos los mismos.
+                </div>
+                
+                <p style="font-size: 8pt; margin-top: 10pt;">FORMULARIO 04 – FICHA MÉDICA – VERSION 2022 <span style="float: right;">Pág. 1 de 3</span></p>
+            </div>
+
+            <div class="page-break"></div>
+
+            <!-- PAGE 2 -->
+            <div class="print-page">
+                <div class="p-header">
+                    <div class="p-header-top">
+                        <div class="p-logo" style="color: #ffd700; filter: drop-shadow(0 0 1pt #000);"></div>
+                        <div class="p-header-text">
+                            <strong>ASOCIACIÓN ARQUIDIOCESANA DE SCOUTISMO CATÓLICO ARGENTINO</strong><br>
+                            <span class="p-header-heavy">A. A. S. C. A.</span><br>
+                            <span class="p-header-small">Fundada por Decreto Canónico Nº 63/96 del 30/XI/96 - Arquidiócesis de Santa Fe de la Vera Cruz</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="p-section-header">DATOS A SER COMPLETADOS POR LOS PADRES/TUTOR:</h3>
+                <div class="p-question-list">
+                    <div class="p-q-row">
+                        <div class="p-q-text">Sabe nadar:</div>
+                        <div class="p-q-ans"><span class="p-checkbox" id="p-nada-si">SI</span> <span class="p-checkbox" id="p-nada-no">NO</span></div>
+                    </div>
+                    <div class="p-q-row">
+                        <div class="p-q-text">Usa lentes, lentes de contacto, prótesis dentales o aparatos dentales:</div>
+                        <div class="p-q-ans"><span class="p-checkbox" id="p-lentes-si">SI</span> <span class="p-checkbox" id="p-lentes-no">NO</span></div>
+                    </div>
+                    <div class="p-row-indic">Indicaciones: <span class="p-val-full" id="p-lentes-indicaciones"></span></div>
+
+                    <div class="p-q-row">
+                        <div class="p-q-text">Padece de alguna condición o problema ortopédico, de articulaciones, óseo o es susceptible a fracturas:</div>
+                        <div class="p-q-ans"><span class="p-checkbox" id="p-ortopedico-si">SI</span> <span class="p-checkbox" id="p-ortopedico-no">NO</span></div>
+                    </div>
+                    <div class="p-row-indic">Indicaciones: <span class="p-val-full" id="p-ortopedico-indicaciones"></span></div>
+
+                    <div class="p-q-row" style="margin-top: 10pt;">
+                        <span class="p-q-text">Es alérgico a:</span>
+                        <div class="p-q-ans" style="display: flex; gap: 5pt; font-size: 8pt;">
+                            Comidas <span class="p-checkbox-small" id="p-al-comidas">SI NO</span>
+                            Medicamentos <span class="p-checkbox-small" id="p-al-medicamentos">SI NO</span>
+                            Antibióticos <span class="p-checkbox-small" id="p-al-antibioticos">SI NO</span>
+                        </div>
+                    </div>
+                    <div class="p-row-indic">Otros: <span class="p-val-full" id="p-alergias-detalles"></span></div>
+                    
+                    <div class="p-q-row">
+                        <div class="p-q-text">¿Tuvo alguna intervención quirúrgica?</div>
+                        <div class="p-q-ans"><span class="p-checkbox">SI NO</span></div>
+                    </div>
+                    <div class="p-row-indic">Especifique: <span class="p-val-full" id="p-intervencion-quiro"></span></div>
+
+                    <div class="p-q-row">
+                        <div class="p-q-text">Es diabético:</div>
+                        <div class="p-q-ans"><span class="p-checkbox" id="p-diabetico-si">SI</span> <span class="p-checkbox" id="p-diabetico-no">NO</span></div>
+                    </div>
+                    <div class="p-row-indic">Dosis de insulina: <span class="p-val-full" id="p-insulina"></span></div>
+
+                    <div class="p-q-row">
+                        <div class="p-q-text">Es asmático:</div>
+                        <div class="p-q-ans"><span class="p-checkbox" id="p-asmatico-si">SI</span> <span class="p-checkbox" id="p-asmatico-no">NO</span></div>
+                    </div>
+                    <div class="p-row-indic">Medicamento: <span class="p-val" id="p-asma-med" style="width: 250px;"></span> Cada cuanto tiempo: <span class="p-val" id="p-asma-freq" style="width: 150px;"></span></div>
+                </div>
+
+                <h3 class="p-section-header" style="margin-top: 15pt;">Ha padecido o padece:</h3>
+                <div class="p-history-grid">
+                    <div class="p-history-col">
+                        <div class="p-history-title">Antecedentes respiratorios</div>
+                        <div class="p-history-item">Bronquitis <span class="p-square"></span></div>
+                        <div class="p-history-item">Asma <span class="p-square"></span></div>
+                        <div class="p-history-item">Neumonía <span class="p-square"></span></div>
+                        <div class="p-history-item">Alergias respiratorias <span class="p-square"></span></div>
+                    </div>
+                    <div class="p-history-col">
+                        <div class="p-history-title">Antecedentes cardiovasculares</div>
+                        <div class="p-history-item">Arritmia <span class="p-square"></span></div>
+                        <div class="p-history-item">Presión Alta <span class="p-square"></span></div>
+                        <div class="p-history-item">Presión Baja <span class="p-square"></span></div>
+                        <div class="p-history-item">Soplos <span class="p-square"></span></div>
+                    </div>
+                </div>
+
+                <p style="font-size: 8pt; margin-top: 20pt;">FORMULARIO 04 – FICHA MÉDICA – VERSION 2022 <span style="float: right;">Pág. 2 de 3</span></p>
+            </div>
+
+            <div class="page-break"></div>
+
+            <!-- PAGE 3 -->
+            <div class="print-page">
+                <div class="p-header">
+                    <div class="p-header-top">
+                        <div class="p-logo" style="color: #ffd700; filter: drop-shadow(0 0 1pt #000);"></div>
+                        <div class="p-header-text">
+                            <strong>ASOCIACIÓN ARQUIDIOCESANA DE SCOUTISMO CATÓLICO ARGENTINO</strong><br>
+                            <span class="p-header-heavy">A. A. S. C. A.</span><br>
+                            <span class="p-header-small">Fundada por Decreto Canónico Nº 63/96 del 30/XI/96 - Arquidiócesis de Santa Fe de la Vera Cruz</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="p-section-header">DATOS A SER COMPLETADOS POR EL MEDICO DE CABECERA:</h3>
+                <div class="p-exam-section">
+                    <div class="p-row">EXAMEN FÍSICO (Consignar datos positivos):</div>
+                    <div class="p-row">Pulso: <span class="p-val" id="p-pulso" style="width: 200px;"></span> Tensión arterial: <span class="p-val" id="p-tension" style="width: 200px;"></span></div>
+                    <div class="p-row-dotted">Auscultación/Examen Físico:</div>
+                    <div class="p-val-box" id="p-examen-fisico"></div>
+                    
+                    <div class="p-row" style="margin-top: 15pt;">Postura: __________________________________________________________________________</div>
+                    <div class="p-row">Columna: __________________________________________________________________________</div>
+                    
+                    <div class="p-row" style="margin-top: 10pt;">
+                        Caries: <span class="p-checkbox" id="p-caries-si">SI</span> <span class="p-checkbox" id="p-caries-no">NO</span>
+                        <span style="margin-left: 20pt;">Faltan piezas dentales: <span class="p-checkbox" id="p-faltan-dientes-si">SI</span> <span class="p-checkbox" id="p-faltan-dientes-no">NO</span></span>
+                    </div>
+                </div>
+
+                <div class="p-notes-box">
+                    <p style="text-align: center; font-size: 7pt; font-weight: bold;">Por favor utilice este espacio para ampliar o explicar algún otro dato que considere útil y que no conste en esta planilla. Adjunte toda la documentación que crea necesaria.</p>
+                </div>
+
+                <div class="p-signatures">
+                    <div class="p-sig-col">
+                        <div class="p-sig-line"></div>
+                        Firma de la Madre/Tutora<br>Aclaración y DNI
+                    </div>
+                    <div class="p-sig-col">
+                        <div class="p-sig-line"></div>
+                        Firma del Padre/Tutor<br>Aclaración y DNI
+                    </div>
+                    <div class="p-sig-col">
+                        <div class="p-sig-line"></div>
+                        Firma y Sello del profesional<br>Aclaración y N.º de matricula
+                    </div>
+                </div>
+
+                <p style="font-size: 8pt; margin-top: 40pt;">FORMULARIO 04 – FICHA MÉDICA – VERSION 2022 <span style="float: right;">Pág. 3 de 3</span></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="container">
+        <p>&copy; 2026 AASCA - Powered by Huemul Solutions</p>
+    </footer>
+
+    <style>
+        /* CSS para el Layout de Impresión (Réplica exacta) */
+        .print-only { display: none; }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            .print-only { display: block !important; }
+            .form-container, header, footer, .actions { display: none !important; }
+            html, body { 
+                background: white; 
+                margin: 0; 
+                padding: 0;
+                height: auto;
+            }
+            
+            .print-page {
+                width: 210mm;
+                height: 296mm; /* Exactly one A4 page minus a tiny bit for safety */
+                padding: 10mm 15mm;
+                margin: 0;
+                position: relative;
+                box-sizing: border-box;
+                background: white;
+                page-break-after: always;
+                page-break-inside: avoid;
+            }
+
+            .print-page:last-child {
+                page-break-after: auto;
+            }
+
+            .p-header-top { display: flex; align-items: center; border-bottom: 2px solid #333; padding-bottom: 5pt; margin-bottom: 10pt; }
+            .p-logo { font-size: 24pt; margin-right: 15pt; }
+            .p-header-text { text-align: center; flex: 1; }
+            .p-header-text strong { font-size: 11pt; letter-spacing: 0.5pt; }
+            .p-header-heavy { font-size: 14pt; font-weight: 800; display: block; margin: 2pt 0; }
+            .p-header-small { font-size: 7pt; font-style: italic; }
+
+            .p-title-section { text-align: center; margin-bottom: 15pt; }
+            .p-form-title { font-size: 16pt; margin: 0; }
+            .p-form-id { font-size: 14pt; margin: 0; }
+            .p-subtitle { font-size: 9pt; margin: 5pt 0; }
+            .p-date-row { text-align: right; font-size: 10pt; margin-top: 10pt; }
+
+            .p-disclaimer { font-size: 8.5pt; font-style: italic; text-align: justify; border-top: 1px dashed #666; padding-top: 5pt; margin-bottom: 15pt; line-height: 1.3; }
+
+            .p-personal-data { margin-bottom: 15pt; }
+            .p-row { margin: 8pt 0; display: flex; align-items: flex-end; }
+            .p-val { border-bottom: 1px dotted black; display: inline-block; padding: 0 5pt; height: 14pt; overflow: hidden; }
+            .p-val-full { border-bottom: 1px dotted black; display: block; padding: 0 5pt; min-height: 14pt; }
+            .p-row-indic { margin-top: 5pt; font-size: 9pt; }
+
+            .p-table { width: 100%; border-collapse: collapse; margin: 15pt 0; }
+            .p-table th, .p-table td { border: 1px solid #333; padding: 5pt; text-align: center; font-size: 9pt; }
+            .p-table th { background: #f0f0f0; }
+
+            .p-legal-box { border: 1px solid black; padding: 8pt; font-size: 8pt; font-weight: bold; text-align: center; margin: 15pt 0; line-height: 1.4; }
+
+            .p-section-header { font-size: 10pt; font-weight: bold; border-bottom: 1px solid #666; margin: 15pt 0 10pt 0; padding-bottom: 3pt; }
+
+            .p-q-row { display: flex; justify-content: space-between; align-items: center; margin: 6pt 0; font-size: 9pt; }
+            .p-checkbox { border: 1px solid black; padding: 2pt 6pt; font-weight: bold; font-size: 8pt; margin-left: 5pt; }
+            .p-checkbox.selected { background: #eee; text-decoration: underline; }
+            .p-checkbox-small { border: 1px solid #999; padding: 1pt 4pt; font-size: 7pt; }
+
+            .p-history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20pt; margin-top: 10pt; }
+            .p-history-title { font-weight: bold; font-size: 9pt; text-decoration: underline; margin-bottom: 5pt; }
+            .p-history-item { display: flex; justify-content: space-between; font-size: 8pt; border-bottom: 1px solid #eee; margin-bottom: 3pt; }
+            .p-square { width: 10pt; height: 10pt; border: 1px solid black; }
+
+            .p-val-box { border: 1px solid #999; min-height: 80pt; margin-top: 5pt; padding: 10pt; font-size: 9pt; }
+            .p-notes-box { border: 1px solid black; margin-top: 20pt; height: 120pt; padding: 10pt; }
+
+            .p-signatures { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20pt; margin-top: 50pt; text-align: center; font-size: 8pt; }
+            .p-sig-line { border-top: 1px dotted black; height: 1pt; margin-bottom: 5pt; }
+        }
+    </style>
+
+    <script>
+        // Set default theme from localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.replace('light-mode', 'dark-mode');
+        }
+
+        function prepareAndPrint() {
+            const form = document.getElementById('medical-form');
+            const data = new FormData(form);
+
+            // Sync Basic Info
+            document.getElementById('p-fecha').innerText = data.get('fecha') || '____ / ____ / ________';
+            document.getElementById('p-nombre').innerText = data.get('nombre') || '';
+            document.getElementById('p-apellido').innerText = data.get('apellido') || '';
+            document.getElementById('p-nacimiento').innerText = data.get('nacimiento') || '';
+            document.getElementById('p-dni').innerText = data.get('dni') || '';
+            document.getElementById('p-sexo').innerText = data.get('sexo') || '';
+            document.getElementById('p-domicilio').innerText = data.get('domicilio') || '';
+            document.getElementById('p-localidad').innerText = data.get('localidad') || '';
+            document.getElementById('p-edad').innerText = data.get('edad') || '';
+            document.getElementById('p-estatura').innerText = data.get('estatura') || '';
+            document.getElementById('p-peso').innerText = data.get('peso') || '';
+            document.getElementById('p-grupo-sangre').innerText = data.get('grupo-sangre') || '';
+            document.getElementById('p-factor').innerText = data.get('factor') || '';
+
+            // Sync Emergency Contacts
+            const phones = data.getAll('emergency-phone[]');
+            const names = data.getAll('emergency-name[]');
+            const relations = data.getAll('emergency-relation[]');
+            for(let i=0; i<2; i++) {
+                document.getElementById(`p-e-tel-${i}`).innerText = phones[i] || '';
+                document.getElementById(`p-e-nom-${i}`).innerText = names[i] || '';
+                document.getElementById(`p-e-par-${i}`).innerText = relations[i] || '';
+            }
+
+            // Sync Insurance
+            document.getElementById('p-obra-social').innerText = data.get('obra-social') || '';
+            document.getElementById('p-afiliado').innerText = data.get('afiliado') || '';
+            document.getElementById('p-os-domicilio').innerText = data.get('os-domicilio') || '';
+            document.getElementById('p-os-telefono').innerText = data.get('os-telefono') || '';
+
+            // Sync Questions (SI/NO logic)
+            const syncSwitch = (formName, printIdPrefix) => {
+                const val = data.get(formName);
+                document.getElementById(`${printIdPrefix}-si`).style.background = val === 'SI' ? '#333' : 'transparent';
+                document.getElementById(`${printIdPrefix}-si`).style.color = val === 'SI' ? 'white' : 'black';
+                document.getElementById(`${printIdPrefix}-no`).style.background = val === 'NO' ? '#333' : 'transparent';
+                document.getElementById(`${printIdPrefix}-no`).style.color = val === 'NO' ? 'white' : 'black';
+            };
+
+            syncSwitch('nada', 'p-nada');
+            syncSwitch('lentes', 'p-lentes');
+            syncSwitch('ortopedico', 'p-ortopedico');
+            syncSwitch('diabetico', 'p-diabetico');
+            syncSwitch('asmatico', 'p-asmatico');
+            syncSwitch('caries', 'p-caries');
+            syncSwitch('faltan-dientes', 'p-faltan-dientes');
+
+            document.getElementById('p-lentes-indicaciones').innerText = data.get('lentes-indicaciones') || '';
+            document.getElementById('p-ortopedico-indicaciones').innerText = data.get('ortopedico-indicaciones') || '';
+            document.getElementById('p-alergias-detalles').innerText = data.get('alergias-detalles') || 'Ninguna';
+            document.getElementById('p-intervencion-quiro').innerText = data.get('intervencion-quiro') || 'Ninguna';
+            document.getElementById('p-insulina').innerText = data.get('insulina') || '';
+            document.getElementById('p-asma-med').innerText = data.get('asma-med') || '';
+            document.getElementById('p-asma-freq').innerText = data.get('asma-freq') || '';
+            
+            // Medical Exam
+            document.getElementById('p-pulso').innerText = data.get('pulso') || '';
+            document.getElementById('p-tension').innerText = data.get('tension') || '';
+            document.getElementById('p-examen-fisico').innerText = data.get('examen-fisico') || '';
+
+            // Trigger print
+            window.print();
+        }
+    </script>
+</body>
+</html>
