@@ -9,6 +9,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.className = savedTheme + '-mode';
+        })();
+    </script>
     <style>
         .form-container { max-width: 1000px; margin: 2rem auto; background: var(--card-bg); padding: 3rem; border-radius: 24px; box-shadow: var(--shadow); }
         .form-header { text-align: center; margin-bottom: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 1rem; }
@@ -226,24 +232,6 @@
     </template>
 
     <script>
-        // Theme toggle
-        const themeToggle = document.getElementById('theme-toggle');
-        const body = document.body;
-        
-        if (localStorage.getItem('theme') === 'dark') {
-            body.classList.replace('light-mode', 'dark-mode');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            if (body.classList.contains('light-mode')) {
-                body.classList.replace('light-mode', 'dark-mode');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.classList.replace('dark-mode', 'light-mode');
-                localStorage.setItem('theme', 'light');
-            }
-        });
-
         // App Logic
         let counterA = 0;
         let counterRow = 0;
@@ -526,12 +514,11 @@
                 </style>
             `;
 
-            const html = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'>${style}</head>
-                <body>${content}</body>
-                </html>
-            `;
+            const html = 
+            `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'>${style}<` + `/head>
+                <body>${content}<` + `/body>
+            <` + `/html>`;
 
             const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
             const url = URL.createObjectURL(blob);
@@ -618,6 +605,7 @@
             if (confirm("Al cargar el backup se borrará lo que tengas escrito ahora. ¿Continuar?")) {
                 document.getElementById('planillas-container').innerHTML = '';
                 counterA = 0;
+                counterRow = 0;
                 data.forEach(day => {
                     addPlanillaA(day);
                 });
@@ -637,5 +625,6 @@
             addPlanillaA();
         };
     </script>
+    <script src="../js/script.js"></script>
 </body>
 </html>
