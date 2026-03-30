@@ -1,45 +1,54 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
+/**
+ * AASCA Forms - Shared Scripts
+ * Handles theme toggling and persistence.
+ */
 
-    // Check for saved theme preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        body.classList.replace('light-mode', 'dark-mode');
-    }
-
-    // Toggle theme
-    themeToggle.addEventListener('click', () => {
-        if (body.classList.contains('light-mode')) {
-            body.classList.replace('light-mode', 'dark-mode');
-            localStorage.setItem('theme', 'dark');
-            animateToggle();
+(function() {
+    // 1. Theme Logic (runs immediately to avoid flash)
+    const applyTheme = (theme) => {
+        if (theme === 'dark') {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
         } else {
-            body.classList.replace('dark-mode', 'light-mode');
-            localStorage.setItem('theme', 'light');
-            animateToggle();
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
         }
-    });
-
-    function animateToggle() {
-        themeToggle.style.transform = 'scale(1.2) rotate(360deg)';
-        setTimeout(() => {
-            themeToggle.style.transform = '';
-        }, 300);
-    }
-
-    // Intersection Observer for scroll animations (if more sections are added later)
-    const observerOptions = {
-        threshold: 0.1
     };
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, observerOptions);
+    // Initial check
+    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(savedTheme);
 
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-});
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        if (!themeToggle) return;
+
+        // Set initial state of buttons if needed or just handle clicks
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark-mode');
+            const newTheme = isDark ? 'light' : 'dark';
+            
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Animation
+            themeToggle.style.transform = 'scale(1.2) rotate(360deg)';
+            setTimeout(() => {
+                themeToggle.style.transform = '';
+            }, 300);
+        });
+
+        // Fade-in animations
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    });
+})();
