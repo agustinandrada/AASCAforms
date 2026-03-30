@@ -104,7 +104,11 @@
             </div>
 
             <div class="actions">
-                <button type="button" class="btn btn-primary" onclick="prepareAndPrint()"><i class="fas fa-print"></i> Imprimir Planillas</button>
+                <button type="button" class="btn btn-primary" onclick="prepareAndPrint()"><i class="fas fa-print"></i> Imprimir</button>
+                <button type="button" class="btn" style="background: #2b5797; color: white;" onclick="exportToWord()"><i class="far fa-file-word"></i> Word (Editable)</button>
+                <button type="button" class="btn btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Guardar Backup</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-input').click()"><i class="fas fa-upload"></i> Cargar</button>
+                <input type="file" id="file-input" style="display: none;" onchange="importData(event)">
                 <button type="button" class="btn" style="background: var(--accent-color); color: white;" onclick="window.location.href='../index.html'"><i class="fas fa-arrow-left"></i> Volver</button>
             </div>
         </div>
@@ -244,7 +248,7 @@
         let counterA = 0;
         let counterRow = 0;
 
-        function addPlanillaA() {
+        function addPlanillaA(data = null) {
             counterA++;
             const id = `a${counterA}`;
             const tpl = document.getElementById('tpl-planilla-a').innerHTML;
@@ -255,29 +259,39 @@
             div.innerHTML = html;
             container.appendChild(div.firstElementChild);
             
-            // Add some default rows
-            for(let i=0; i<3; i++) {
-                addActivityRow(id);
+            const paContainer = document.querySelector(`.planilla-a[data-id="${id}"]`);
+
+            if (data) {
+                // Load existing data
+                paContainer.querySelector('.pa-tema').value = data.tema || '';
+                paContainer.querySelector('.pa-dia').value = data.dia || '';
+                paContainer.querySelector('.pa-mes').value = data.mes || '';
+                paContainer.querySelector('.pa-anio').value = data.anio || '';
+                paContainer.querySelector('.pa-objetivos').value = data.objetivos || '';
+                
+                (data.actividades || []).forEach(act => {
+                    addActivityRow(id, act);
+                });
+            } else {
+                // Add some default rows if new
+                for(let i=0; i<3; i++) {
+                    addActivityRow(id);
+                }
             }
             
-            // Event listeners to sync header data to B forms (if needed later) e.g., Date and Tema
-            const paContainer = document.querySelector(`.planilla-a[data-id="${id}"]`);
-            const inputs = paContainer.querySelectorAll('.pa-tema, .pa-dia, .pa-mes, .pa-anio');
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                   // Optional: Can sync these to printed Planillas B
-                });
-            });
+            // Auto-save on any input
+            paContainer.addEventListener('input', autoSave);
         }
 
         function removePlanillaA(id) {
             if(confirm("¿Estás seguro de eliminar todo este día y sus actividades?")) {
                 const el = document.querySelector(`.planilla-a[data-id="${id}"]`);
                 if(el) el.remove();
+                autoSave();
             }
         }
 
-        function addActivityRow(aId) {
+        function addActivityRow(aId, data = null) {
             counterRow++;
             const rowId = `r${counterRow}`;
             const tpl = document.getElementById('tpl-activity-row').innerHTML;
@@ -285,6 +299,19 @@
             
             const tbody = document.getElementById(`tbody-${aId}`);
             tbody.insertAdjacentHTML('beforeend', html);
+            
+            if (data) {
+                const tr = tbody.querySelector(`tr[data-row-id="${rowId}"]`);
+                tr.querySelector('.a-item').value = data.item || '';
+                tr.querySelector('.a-hora').value = data.hora || '';
+                tr.querySelector('.a-actividad').value = data.actividad || '';
+                tr.querySelector('.a-responsable').value = data.responsable || '';
+                tr.querySelector('.a-recursos-a').value = data.recursos || '';
+                
+                if (data.item) {
+                    syncPlanillaB(aId, rowId, data.bData);
+                }
+            }
         }
 
         function removeActivityRow(aId, rowId) {
@@ -295,9 +322,10 @@
             if(pb) pb.remove();
             
             checkEmptyPlanillasB(aId);
+            autoSave();
         }
 
-        function syncPlanillaB(aId, rowId) {
+        function syncPlanillaB(aId, rowId, bData = null) {
             const tr = document.querySelector(`tr[data-row-id="${rowId}"]`);
             if(!tr) return;
             
@@ -307,9 +335,7 @@
             const pbContainer = document.getElementById(`pb-container-${aId}`);
             let pbCard = document.getElementById(`pb-${rowId}`);
             
-            // If item has a number, create or update B form
             if (itemVal !== '') {
-                // Clear placeholder if first
                 const placeholder = pbContainer.querySelector('p');
                 if (placeholder) placeholder.remove();
 
@@ -320,17 +346,22 @@
                     pbCard = document.getElementById(`pb-${rowId}`);
                 }
                 
-                // Update synced fields
                 pbCard.querySelector('.pb-item').value = itemVal;
                 pbCard.querySelector('.pb-actividad').value = actVal;
+
+                if (bData) {
+                    pbCard.querySelector('.pb-objetivos').value = bData.objetivos || '';
+                    pbCard.querySelector('.pb-contenidos').value = bData.contenidos || '';
+                    pbCard.querySelector('.pb-desarrollo').value = bData.desarrollo || '';
+                    pbCard.querySelector('.pb-recursos').value = bData.recursos || '';
+                    pbCard.querySelector('.pb-evaluacion').value = bData.evaluacion || '';
+                }
                 
             } else {
-                // Remove if item number is cleared
-                if (pbCard) {
-                    pbCard.remove();
-                }
+                if (pbCard) pbCard.remove();
                 checkEmptyPlanillasB(aId);
             }
+            autoSave();
         }
         
         function checkEmptyPlanillasB(aId) {
@@ -342,25 +373,23 @@
             }
         }
 
-        function prepareAndPrint() {
+        function generatePrintHTML() {
             const printLayout = document.getElementById('print-layout');
-            printLayout.innerHTML = ''; // Clear previous
+            printLayout.innerHTML = ''; 
 
             const planillasA = document.querySelectorAll('.planilla-a');
             
             planillasA.forEach(pa => {
                 const aId = pa.getAttribute('data-id');
-                
-                // 1. Gather A data
                 const tema = pa.querySelector('.pa-tema').value || '';
                 const dia = pa.querySelector('.pa-dia').value || '';
                 const mes = pa.querySelector('.pa-mes').value || '';
                 const anio = pa.querySelector('.pa-anio').value || '';
                 const objetivos = pa.querySelector('.pa-objetivos').value || '';
                 
-                // --- Generate HTML for Printed Planilla A ---
                 let htmlA = `
                 <div class="print-page">
+                    <div style="text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 12pt;">PLANILLA A: CRONOGRAMA GENERAL</div>
                     <table class="p-table" style="margin-bottom: 0;">
                         <tr>
                             <th style="width: 20%;">TEMAS / RAMA</th>
@@ -409,10 +438,8 @@
                 htmlA += `</table></div>`;
                 printLayout.insertAdjacentHTML('beforeend', htmlA);
                 
-                // --- Generate HTML for Printed Planillas B ---
                 const cardsB = pa.querySelectorAll('.planilla-b-card');
                 cardsB.forEach(card => {
-                    const rowId = card.id.replace('pb-', '');
                     const itVal = card.querySelector('.pb-item').value;
                     const acVal = card.querySelector('.pb-actividad').value;
                     const obVal = card.querySelector('.pb-objetivos').value;
@@ -468,16 +495,145 @@
                 });
             });
 
-            if(planillasA.length === 0) {
+            return planillasA.length > 0;
+        }
+
+        function prepareAndPrint() {
+            if (generatePrintHTML()) {
+                window.print();
+            } else {
                 alert('Añade al menos un día para imprimir.');
+            }
+        }
+
+        function exportToWord() {
+            if (!generatePrintHTML()) {
+                alert('No hay datos para exportar.');
                 return;
             }
 
-            window.print();
+            const content = document.getElementById('print-layout').innerHTML;
+            
+            // Add some basic Word styling
+            const style = `
+                <style>
+                    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-family: Arial; }
+                    th, td { border: 1px solid black; padding: 8px; font-size: 10pt; }
+                    th { background-color: #f2f2f2; }
+                    .bold { font-weight: bold; }
+                    .text-center { text-align: center; }
+                    .print-page { page-break-after: always; padding: 20px; }
+                </style>
+            `;
+
+            const html = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'>${style}</head>
+                <body>${content}</body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'Planificacion_AASCA.doc';
+            link.click();
+            URL.revokeObjectURL(url);
         }
 
-        // Init with one Planilla A
+        // --- Data Persistence ---
+
+        function collectAllData() {
+            const data = [];
+            document.querySelectorAll('.planilla-a').forEach(pa => {
+                const dailyData = {
+                    tema: pa.querySelector('.pa-tema').value,
+                    dia: pa.querySelector('.pa-dia').value,
+                    mes: pa.querySelector('.pa-mes').value,
+                    anio: pa.querySelector('.pa-anio').value,
+                    objetivos: pa.querySelector('.pa-objetivos').value,
+                    actividades: []
+                };
+
+                pa.querySelectorAll('.tbody-activities tr').forEach(tr => {
+                    const rowId = tr.getAttribute('data-row-id');
+                    const pb = document.getElementById(`pb-${rowId}`);
+                    
+                    const activity = {
+                        item: tr.querySelector('.a-item').value,
+                        hora: tr.querySelector('.a-hora').value,
+                        actividad: tr.querySelector('.a-actividad').value,
+                        responsable: tr.querySelector('.a-responsable').value,
+                        recursos: tr.querySelector('.a-recursos-a').value,
+                        bData: pb ? {
+                            objetivos: pb.querySelector('.pb-objetivos').value,
+                            contenidos: pb.querySelector('.pb-contenidos').value,
+                            desarrollo: pb.querySelector('.pb-desarrollo').value,
+                            recursos: pb.querySelector('.pb-recursos').value,
+                            evaluacion: pb.querySelector('.pb-evaluacion').value
+                        } : null
+                    };
+                    dailyData.actividades.push(activity);
+                });
+                data.push(dailyData);
+            });
+            return data;
+        }
+
+        function autoSave() {
+            const data = collectAllData();
+            localStorage.setItem('aasca_form_data', JSON.stringify(data));
+        }
+
+        function exportData() {
+            const data = collectAllData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'backup_planificacion_aasca.json';
+            link.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    loadDataIntoForm(data);
+                } catch (err) {
+                    alert('Error al cargar el archivo. Asegúrate que sea un JSON válido.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function loadDataIntoForm(data) {
+            if (!data || !Array.isArray(data)) return;
+            
+            if (confirm("Al cargar el backup se borrará lo que tengas escrito ahora. ¿Continuar?")) {
+                document.getElementById('planillas-container').innerHTML = '';
+                counterA = 0;
+                data.forEach(day => {
+                    addPlanillaA(day);
+                });
+                autoSave();
+            }
+        }
+
         window.onload = () => {
+            const saved = localStorage.getItem('aasca_form_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.length > 0) {
+                    data.forEach(day => addPlanillaA(day));
+                    return;
+                }
+            }
             addPlanillaA();
         };
     </script>
