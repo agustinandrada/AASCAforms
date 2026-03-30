@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificación de Campamento - AASCA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .form-container { max-width: 1000px; margin: 2rem auto; background: var(--card-bg); padding: 3rem; border-radius: 24px; box-shadow: var(--shadow); }
+        .form-header { text-align: center; margin-bottom: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 1rem; }
+        .form-section { margin-bottom: 2rem; border: 1px solid rgba(46, 125, 50, 0.2); border-radius: 16px; padding: 2rem; background: var(--bg-color); }
+        .section-title { font-size: 1.2rem; color: var(--primary-color); border-left: 4px solid var(--primary-color); padding-left: 1rem; margin-bottom: 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Planilla A styles */
+        .planilla-a-header { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+        .planilla-a-header .field { display: flex; flex-direction: column; gap: 0.3rem; }
+        .date-group { display: flex; gap: 0.5rem; }
+        .date-group input { width: 60px; text-align: center; }
+        
+        table.activity-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        table.activity-table th, table.activity-table td { border: 1px solid rgba(46, 125, 50, 0.2); padding: 0.5rem; text-align: left; }
+        table.activity-table th { background: rgba(46, 125, 50, 0.1); font-size: 0.85rem; font-weight: 600; }
+        table.activity-table td input { width: 100%; border: none; background: transparent; padding: 0.3rem; outline: none; border-bottom: 1px solid transparent; }
+        table.activity-table td input:focus { border-bottom: 1px solid var(--primary-color); }
+        
+        .col-item { width: 60px; text-align: center; }
+        .col-hora { width: 80px; }
+        
+        /* Planilla B styles */
+        .planilla-b-card { margin-top: 1rem; border: 1px solid rgba(46, 125, 50, 0.2); border-radius: 12px; padding: 1.5rem; background: var(--card-bg); }
+        .b-header { display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end; margin-bottom: 1rem; border-bottom: 1px dashed rgba(46, 125, 50, 0.2); padding-bottom: 1rem; }
+        .b-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .b-full { grid-column: span 2; }
+        
+        label { font-size: 0.85rem; font-weight: 600; opacity: 0.9; }
+        input, select, textarea { padding: 0.7rem; border-radius: 8px; border: 1px solid rgba(46, 125, 50, 0.2); background: var(--bg-color); color: var(--text-color); font-family: inherit; width: 100%; max-width: 100%; }
+        textarea { resize: vertical; min-height: 80px; }
+        
+        .btn { padding: 0.7rem 1.5rem; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-secondary { background: rgba(46, 125, 50, 0.1); color: var(--primary-color); }
+        .btn-danger { background: #fee2e2; color: #ef4444; padding: 0.5rem 1rem; font-size: 0.85rem; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        
+        .actions { position: sticky; bottom: 2rem; display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; z-index: 100; }
+        
+        /* Hide fields in read-only mode for Planilla B */
+        .readonly { background: transparent !important; border-color: transparent !important; font-weight: 600; cursor: default; }
+        
+        /* Print Replica Styles */
+        .print-only { display: none; }
+        @media print {
+            @page { size: A4; margin: 10mm; }
+            .print-only { display: block !important; }
+            .form-container, header, footer, .actions, .btn { display: none !important; }
+            html, body { background: white; margin: 0; padding: 0; }
+            
+            .print-page { page-break-after: always; font-size: 9pt; line-height: 1.2; font-family: Arial, sans-serif; }
+            table.p-table { width: 100%; border-collapse: collapse; margin-bottom: 15pt; border: 1px solid #000; }
+            table.p-table th, table.p-table td { border: 1px solid #000; padding: 4pt; vertical-align: top; }
+            table.p-table th { background: #f0f0f0; text-align: center; font-weight: bold; text-transform: uppercase; }
+            
+            .text-center { text-align: center; }
+            .bold { font-weight: bold; }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <div class="header-top container"><span class="official-text">ASOCIACIÓN ARQUIDIOCESANA DE SCOUTISMO CATÓLICO ARGENTINO</span></div>
+        <nav class="container">
+            <div class="logo">
+                <a href="../index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem;">
+                    <span class="logo-icon">⚜️</span>
+                    <div class="logo-text"><span class="logo-main">A.A.S.C.A.</span><span class="logo-sub">Gestión de Formularios</span></div>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <button id="theme-toggle" aria-label="Cambiar tema">
+                    <span class="icon-sun">☀️</span>
+                    <span class="icon-moon">🌙</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Planificación de Campamento</h1>
+                <p>Planillas A (General) y B (Actividades)</p>
+            </div>
+
+            <div id="planillas-container">
+                <!-- Day / Planilla A sections will be injected here -->
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-secondary" onclick="addPlanillaA()"><i class="fas fa-plus"></i> Añadir Nuevo Día (Planilla A)</button>
+            </div>
+
+            <div class="actions">
+                <button type="button" class="btn btn-primary" onclick="prepareAndPrint()"><i class="fas fa-print"></i> Imprimir Planillas</button>
+                <button type="button" class="btn" style="background: var(--accent-color); color: white;" onclick="window.location.href='../index.html'"><i class="fas fa-arrow-left"></i> Volver</button>
+            </div>
+        </div>
+
+        <div id="print-layout" class="print-only">
+            <!-- Print contents will be generated here -->
+        </div>
+    </main>
+
+    <!-- Templates -->
+    <template id="tpl-planilla-a">
+        <div class="form-section planilla-a" data-id="{id}">
+            <div class="section-title">
+                Planilla A: Cronograma del Día
+                <button type="button" class="btn btn-danger" onclick="removePlanillaA('{id}')"><i class="fas fa-trash"></i> Eliminar</button>
+            </div>
+            
+            <div class="planilla-a-header">
+                <div class="field">
+                    <label>Tema o Rama</label>
+                    <input type="text" class="pa-tema" placeholder="Ej: Manada - Domingo">
+                </div>
+                <div class="field">
+                    <label>Fecha (D/M/A)</label>
+                    <div class="date-group">
+                        <input type="text" class="pa-dia" placeholder="DD" maxlength="2">
+                        <input type="text" class="pa-mes" placeholder="MM" maxlength="2">
+                        <input type="text" class="pa-anio" placeholder="AAAA" maxlength="4">
+                    </div>
+                </div>
+                <div class="field" style="grid-column: span 2;">
+                    <label>Objetivos del Día</label>
+                    <textarea class="pa-objetivos" placeholder="Plantear el tema central, etc..."></textarea>
+                </div>
+            </div>
+
+            <h4>Actividades de Rama o Grupo</h4>
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th class="col-item">Ítem</th>
+                        <th class="col-hora">Hora</th>
+                        <th>Actividad</th>
+                        <th>Responsable/s</th>
+                        <th>Recursos Auxiliares</th>
+                        <th style="width: 50px;"></th>
+                    </tr>
+                </thead>
+                <tbody class="tbody-activities" id="tbody-{id}">
+                    <!-- rows go here -->
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-secondary" style="font-size: 0.85rem;" onclick="addActivityRow('{id}')">
+                <i class="fas fa-plus"></i> Fila de Actividad
+            </button>
+
+            <div style="margin-top: 3rem;">
+                <h4 style="border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-bottom: 1rem; color: var(--primary-color);">Planillas B (Detalle de Ítems)</h4>
+                <div class="planillas-b-container" id="pb-container-{id}">
+                    <p style="text-align: center; opacity: 0.6; font-size: 0.9rem; padding: 1rem;">Las Planillas B se generarán automáticamente por cada actividad que tenga un número de "Ítem" asignado en la tabla de arriba.</p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-activity-row">
+        <tr data-row-id="{rowId}">
+            <td class="col-item"><input type="text" class="a-item text-center" placeholder="#" onchange="syncPlanillaB('{aId}', '{rowId}')"></td>
+            <td class="col-hora"><input type="time" class="a-hora"></td>
+            <td><input type="text" class="a-actividad" placeholder="Nombre de actividad" oninput="syncPlanillaB('{aId}', '{rowId}')"></td>
+            <td><input type="text" class="a-responsable" placeholder="Responsable"></td>
+            <td><input type="text" class="a-recursos-a" placeholder="Materiales..."></td>
+            <td>
+                <button type="button" class="btn btn-danger" style="padding: 0.2rem 0.5rem;" onclick="removeActivityRow('{aId}', '{rowId}')"><i class="fas fa-times"></i></button>
+            </td>
+        </tr>
+    </template>
+
+    <template id="tpl-planilla-b">
+        <div class="planilla-b-card" id="pb-{rowId}">
+            <div class="b-header">
+                <div class="field">
+                    <label>Actividad vinculada</label>
+                    <input type="text" class="pb-actividad readonly" readonly>
+                </div>
+                <div class="field" style="width: 100px;">
+                    <label>ÍTEM</label>
+                    <input type="text" class="pb-item readonly text-center" readonly>
+                </div>
+            </div>
+            
+            <div class="b-grid">
+                <div class="field b-full">
+                    <label>Objetivo/s de la Actividad</label>
+                    <textarea class="pb-objetivos"></textarea>
+                </div>
+                <div class="field b-full">
+                    <label>Contenidos</label>
+                    <input type="text" class="pb-contenidos">
+                </div>
+                <div class="field">
+                    <label>Desarrollo</label>
+                    <textarea class="pb-desarrollo" style="min-height: 150px;"></textarea>
+                </div>
+                <div class="field">
+                    <label>Recursos Auxiliares Específicos</label>
+                    <textarea class="pb-recursos" style="min-height: 150px;"></textarea>
+                </div>
+                <div class="field b-full">
+                    <label>Evaluación de la Unidad</label>
+                    <input type="text" class="pb-evaluacion">
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.replace('light-mode', 'dark-mode');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('light-mode')) {
+                body.classList.replace('light-mode', 'dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.replace('dark-mode', 'light-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // App Logic
+        let counterA = 0;
+        let counterRow = 0;
+
+        function addPlanillaA() {
+            counterA++;
+            const id = `a${counterA}`;
+            const tpl = document.getElementById('tpl-planilla-a').innerHTML;
+            const html = tpl.replace(/{id}/g, id);
+            
+            const container = document.getElementById('planillas-container');
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            container.appendChild(div.firstElementChild);
+            
+            // Add some default rows
+            for(let i=0; i<3; i++) {
+                addActivityRow(id);
+            }
+            
+            // Event listeners to sync header data to B forms (if needed later) e.g., Date and Tema
+            const paContainer = document.querySelector(`.planilla-a[data-id="${id}"]`);
+            const inputs = paContainer.querySelectorAll('.pa-tema, .pa-dia, .pa-mes, .pa-anio');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                   // Optional: Can sync these to printed Planillas B
+                });
+            });
+        }
+
+        function removePlanillaA(id) {
+            if(confirm("¿Estás seguro de eliminar todo este día y sus actividades?")) {
+                const el = document.querySelector(`.planilla-a[data-id="${id}"]`);
+                if(el) el.remove();
+            }
+        }
+
+        function addActivityRow(aId) {
+            counterRow++;
+            const rowId = `r${counterRow}`;
+            const tpl = document.getElementById('tpl-activity-row').innerHTML;
+            const html = tpl.replace(/{aId}/g, aId).replace(/{rowId}/g, rowId);
+            
+            const tbody = document.getElementById(`tbody-${aId}`);
+            tbody.insertAdjacentHTML('beforeend', html);
+        }
+
+        function removeActivityRow(aId, rowId) {
+            const tr = document.querySelector(`tr[data-row-id="${rowId}"]`);
+            if(tr) tr.remove();
+            
+            const pb = document.getElementById(`pb-${rowId}`);
+            if(pb) pb.remove();
+            
+            checkEmptyPlanillasB(aId);
+        }
+
+        function syncPlanillaB(aId, rowId) {
+            const tr = document.querySelector(`tr[data-row-id="${rowId}"]`);
+            if(!tr) return;
+            
+            const itemVal = tr.querySelector('.a-item').value.trim();
+            const actVal = tr.querySelector('.a-actividad').value.trim();
+            
+            const pbContainer = document.getElementById(`pb-container-${aId}`);
+            let pbCard = document.getElementById(`pb-${rowId}`);
+            
+            // If item has a number, create or update B form
+            if (itemVal !== '') {
+                // Clear placeholder if first
+                const placeholder = pbContainer.querySelector('p');
+                if (placeholder) placeholder.remove();
+
+                if (!pbCard) {
+                    const tpl = document.getElementById('tpl-planilla-b').innerHTML;
+                    const html = tpl.replace(/{rowId}/g, rowId);
+                    pbContainer.insertAdjacentHTML('beforeend', html);
+                    pbCard = document.getElementById(`pb-${rowId}`);
+                }
+                
+                // Update synced fields
+                pbCard.querySelector('.pb-item').value = itemVal;
+                pbCard.querySelector('.pb-actividad').value = actVal;
+                
+            } else {
+                // Remove if item number is cleared
+                if (pbCard) {
+                    pbCard.remove();
+                }
+                checkEmptyPlanillasB(aId);
+            }
+        }
+        
+        function checkEmptyPlanillasB(aId) {
+            const pbContainer = document.getElementById(`pb-container-${aId}`);
+            if(pbContainer && pbContainer.querySelectorAll('.planilla-b-card').length === 0) {
+                if(!pbContainer.querySelector('p')) {
+                    pbContainer.innerHTML = `<p style="text-align: center; opacity: 0.6; font-size: 0.9rem; padding: 1rem;">Las Planillas B se generarán automáticamente por cada actividad que tenga un número de "Ítem" asignado en la tabla de arriba.</p>`;
+                }
+            }
+        }
+
+        function prepareAndPrint() {
+            const printLayout = document.getElementById('print-layout');
+            printLayout.innerHTML = ''; // Clear previous
+
+            const planillasA = document.querySelectorAll('.planilla-a');
+            
+            planillasA.forEach(pa => {
+                const aId = pa.getAttribute('data-id');
+                
+                // 1. Gather A data
+                const tema = pa.querySelector('.pa-tema').value || '';
+                const dia = pa.querySelector('.pa-dia').value || '';
+                const mes = pa.querySelector('.pa-mes').value || '';
+                const anio = pa.querySelector('.pa-anio').value || '';
+                const objetivos = pa.querySelector('.pa-objetivos').value || '';
+                
+                // --- Generate HTML for Printed Planilla A ---
+                let htmlA = `
+                <div class="print-page">
+                    <table class="p-table" style="margin-bottom: 0;">
+                        <tr>
+                            <th style="width: 20%;">TEMAS / RAMA</th>
+                            <td class="bold" style="width: 50%;">${tema}</td>
+                            <td class="bold text-center" style="width: 10%;">D<br>${dia}</td>
+                            <td class="bold text-center" style="width: 10%;">M<br>${mes}</td>
+                            <td class="bold text-center" style="width: 10%;">A<br>${anio}</td>
+                        </tr>
+                        <tr>
+                            <th>OBJETIVOS</th>
+                            <td colspan="4" style="height: 60pt; white-space: pre-wrap;">${objetivos}</td>
+                        </tr>
+                    </table>
+                    
+                    <table class="p-table">
+                        <tr><th colspan="5">ACTIVIDADES DE RAMA O GRUPO</th></tr>
+                        <tr>
+                            <th style="width: 8%;">Ítem</th>
+                            <th style="width: 12%;">Hora</th>
+                            <th style="width: 40%;">Actividad</th>
+                            <th style="width: 20%;">Responsable/s</th>
+                            <th style="width: 20%;">Recursos Auxiliares</th>
+                        </tr>
+                `;
+                
+                const rows = pa.querySelectorAll('.tbody-activities tr');
+                rows.forEach(tr => {
+                    const itm = tr.querySelector('.a-item').value;
+                    const hor = tr.querySelector('.a-hora').value;
+                    const act = tr.querySelector('.a-actividad').value;
+                    const res = tr.querySelector('.a-responsable').value;
+                    const rec = tr.querySelector('.a-recursos-a').value;
+                    
+                    if (itm || hor || act || res || rec) {
+                        htmlA += `
+                        <tr>
+                            <td class="text-center bold">${itm}</td>
+                            <td class="text-center">${hor}</td>
+                            <td>${act}</td>
+                            <td>${res}</td>
+                            <td>${rec}</td>
+                        </tr>`;
+                    }
+                });
+                
+                htmlA += `</table></div>`;
+                printLayout.insertAdjacentHTML('beforeend', htmlA);
+                
+                // --- Generate HTML for Printed Planillas B ---
+                const cardsB = pa.querySelectorAll('.planilla-b-card');
+                cardsB.forEach(card => {
+                    const rowId = card.id.replace('pb-', '');
+                    const itVal = card.querySelector('.pb-item').value;
+                    const acVal = card.querySelector('.pb-actividad').value;
+                    const obVal = card.querySelector('.pb-objetivos').value;
+                    const coVal = card.querySelector('.pb-contenidos').value;
+                    const deVal = card.querySelector('.pb-desarrollo').value;
+                    const reVal = card.querySelector('.pb-recursos').value;
+                    const evVal = card.querySelector('.pb-evaluacion').value;
+                    
+                    let htmlB = `
+                    <div class="print-page">
+                        <div class="bold" style="margin-bottom: 5pt; font-size: 10pt;">➔ PLANILLAS DE ACTIVIDADES (PARTE B)</div>
+                        <table class="p-table" style="margin-bottom: 0px;">
+                            <tr>
+                                <th style="width: 20%;">TEMA</th>
+                                <td colspan="2" class="bold">${tema}</td>
+                                <td class="bold text-center" style="width: 10%;">D<br>${dia}</td>
+                                <td class="bold text-center" style="width: 10%;">M<br>${mes}</td>
+                                <td class="bold text-center" style="width: 10%;">A<br>${anio}</td>
+                            </tr>
+                            <tr>
+                                <th>ACTIVIDAD</th>
+                                <td colspan="4" class="bold">${acVal}</td>
+                                <th style="width: 10%;">ÍTEM<br><span style="font-size: 14pt; padding-top: 5pt; display:inline-block;">${itVal}</span></th>
+                            </tr>
+                            <tr>
+                                <th>OBJETIVO/S</th>
+                                <td colspan="5" style="white-space: pre-wrap;">${obVal}</td>
+                            </tr>
+                            <tr>
+                                <th>CONTENIDOS</th>
+                                <td colspan="5">${coVal}</td>
+                            </tr>
+                        </table>
+                        <table class="p-table" style="border-top: none;">
+                            <tr>
+                                <th style="width: 70%;">DESARROLLO</th>
+                                <th style="width: 30%;">RECURSOS AUXILIARES</th>
+                            </tr>
+                            <tr>
+                                <td style="height: 250pt; white-space: pre-wrap;">${deVal}</td>
+                                <td style="text-align: center; white-space: pre-wrap;">${reVal}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">EVALUACIÓN DE LA UNIDAD</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="height: 40pt; white-space: pre-wrap;">${evVal}</td>
+                            </tr>
+                        </table>
+                    </div>`;
+                    
+                    printLayout.insertAdjacentHTML('beforeend', htmlB);
+                });
+            });
+
+            if(planillasA.length === 0) {
+                alert('Añade al menos un día para imprimir.');
+                return;
+            }
+
+            window.print();
+        }
+
+        // Init with one Planilla A
+        window.onload = () => {
+            addPlanillaA();
+        };
+    </script>
+</body>
+</html>
