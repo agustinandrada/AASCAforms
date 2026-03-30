@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Acampe (Form. 05) - AASCA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        .form-container { max-width: 1000px; margin: 2rem auto; background: var(--card-bg); padding: 3rem; border-radius: 24px; box-shadow: var(--shadow); }
+        .form-header { text-align: center; margin-bottom: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 1rem; }
+        .tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(46,125,50,0.2); }
+        .tab { padding: 1rem 2rem; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 600; opacity: 0.7; }
+        .tab.active { border-bottom-color: var(--primary-color); opacity: 1; color: var(--primary-color); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .section { margin-bottom: 2rem; padding: 1.5rem; border: 1px solid rgba(46,125,50,0.1); border-radius: 12px; }
+        .section-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-color); margin-bottom: 1.5rem; border-left: 4px solid var(--primary-color); padding-left: 1rem; }
+        
+        .input-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+        .field { display: flex; flex-direction: column; gap: 0.4rem; }
+        .field.span-2 { grid-column: span 2; }
+        .field.span-3 { grid-column: span 3; }
+        
+        label { font-size: 0.8rem; font-weight: 600; opacity: 0.8; }
+        input, select, textarea { padding: 0.7rem; border-radius: 8px; border: 1px solid rgba(46,125,50,0.2); background: var(--bg-color); color: var(--text-color); font-family: inherit; width: 100%; }
+        
+        table.nomina-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        table.nomina-table th, table.nomina-table td { border: 1px solid rgba(46,125,50,0.2); padding: 0.5rem; text-align: left; font-size: 0.85rem; }
+        table.nomina-table th { background: rgba(46,125,50,0.05); }
+        table.nomina-table input { border: none; background: transparent; padding: 0.3rem; }
+        
+        .actions { position: sticky; bottom: 2rem; display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; z-index: 100; }
+        .btn-primary { background: var(--primary-color); color: white; padding: 1rem 2rem; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; }
+        .btn-control { background: var(--bg-color); border: 1px solid var(--primary-color); color: var(--primary-color); padding: 0.3rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: var(--transition); }
+        .btn-control:hover { background: var(--primary-color); color: white; }
+        
+        .table-header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .table-controls { display: flex; gap: 0.5rem; }
+
+        /* Print Replica */
+        .print-only { display: none; }
+        @media print {
+            @page { size: A4; margin: 10mm; }
+            .print-only { display: block !important; }
+            .form-container, header, footer, .actions { display: none !important; }
+            html, body { background: white !important; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+            .p-page { padding: 5mm; font-size: 9pt; line-height: 1.3; page-break-after: always; }
+            .p-header { text-align: center; margin-bottom: 10pt; border-bottom: 1px solid #000; padding-bottom: 5pt;}
+            .p-title-box { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10pt; }
+            .p-title { font-size: 14pt; font-weight: bold; text-align: center; flex: 1; }
+            .p-form-id { font-size: 11pt; font-weight: bold; width: 100px; text-align: right; }
+            .p-box { border: 1px solid #000; padding: 5pt; margin: 10pt 0; position: relative; }
+            .p-box-title { position: absolute; top: -7pt; left: 10pt; background: white; padding: 0 5pt; font-weight: bold; text-transform: uppercase; font-size: 8pt; }
+            .p-row { display: flex; align-items: flex-end; margin-bottom: 5pt; }
+            .p-val { border-bottom: 1px dotted #000; flex: 1; margin: 0 5pt; height: 1.2em; text-align: left; padding: 0 4pt; }
+            .p-table { width: 100%; border-collapse: collapse; margin: 5pt 0; }
+            .p-table th, .p-table td { border: 1px solid #000; padding: 3pt; font-size: 8pt; vertical-align: middle;}
+            .p-table th { background: #eee; font-weight: bold; }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <div class="header-top container"><span class="official-text">ASOCIACIÓN ARQUIDIOCESANA DE SCOUTISMO CATÓLICO ARGENTINO</span></div>
+        <nav class="container">
+            <div class="logo">
+                <a href="../index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem;">
+                    <span class="logo-icon">⚜️</span>
+                    <div class="logo-text"><span class="logo-main">A.A.S.C.A.</span><span class="logo-sub">Gestión de Formularios</span></div>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Solicitud de Acampe</h1>
+                <p>Form. 05-A (Solicitud) y 05-B (Nómina)</p>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('05a')">Solicitud (05-A)</div>
+                <div class="tab" onclick="switchTab('05b')">Nómina (05-B)</div>
+            </div>
+
+            <form id="camping-form">
+                <!-- FORM 05-A CONTENT -->
+                <div id="tab-05a" class="tab-content active">
+                    <section class="section">
+                        <h2 class="section-title">Datos Generales</h2>
+                        <div class="input-grid">
+                            <div class="field span-2"><label>Grupo Scout</label><input type="text" id="a-grupo"></div>
+                            <div class="field"><label>Fecha de la Notificación</label><input type="text" id="a-fecha-hoy" placeholder="Santa Fe, ..."></div>
+                            <div class="field"><label>Fecha de Salida</label><input type="text" id="a-f-salida" placeholder="DD/MM/AAAA"></div>
+                            <div class="field"><label>Fecha de Regreso</label><input type="text" id="a-f-regreso" placeholder="DD/MM/AAAA"></div>
+                            <div class="field"><label>Localidad</label><input type="text" id="a-localidad"></div>
+                            <div class="field span-2"><label>Lugar exacto / Campo</label><input type="text" id="a-lugar"></div>
+                            <div class="field"><label>Provincia</label><input type="text" id="a-provincia"></div>
+                            <div class="field"><label>Propietario</label><input type="text" id="a-propietario"></div>
+                            <div class="field"><label>Teléfono Propietario</label><input type="text" id="a-tel"></div>
+                            <div class="field span-3"><label>Forma de llegar</label><textarea id="a-llegar"></textarea></div>
+                        </div>
+                    </section>
+
+                    <section class="section">
+                        <h2 class="section-title">Seguros</h2>
+                        <h4>Responsabilidad Civil</h4>
+                        <div class="input-grid" style="margin-bottom: 1rem;">
+                            <div class="field"><label>Compañía</label><input type="text" id="s-rc-cia"></div>
+                            <div class="field"><label>Nº Póliza</label><input type="text" id="s-rc-num"></div>
+                            <div class="field"><label>Vigencia</label><input type="text" id="s-rc-vig"></div>
+                        </div>
+                        <h4>De Accidentes</h4>
+                        <div class="input-grid">
+                            <div class="field"><label>Compañía</label><input type="text" id="s-acc-cia"></div>
+                            <div class="field"><label>Nº Póliza</label><input type="text" id="s-acc-num"></div>
+                            <div class="field"><label>Vigencia</label><input type="text" id="s-acc-vig"></div>
+                        </div>
+                    </section>
+
+                    <section class="section">
+                        <h2 class="section-title">Información por Rama</h2>
+                        <div id="ramas-container-05a">
+                            <!-- JS will inject Rama sections here -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- FORM 05-B CONTENT -->
+                <div id="tab-05b" class="tab-content">
+                    <section class="section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h2 class="section-title" style="margin-bottom: 0;">Miembros de la Nómina (05-B)</h2>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button type="button" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #e53935;" onclick="clearNomina()">Limpiar Todo</button>
+                            </div>
+                        </div>
+                        
+                        <!-- MIEMBROS ACTIVOS SECTION -->
+                        <div class="table-header-actions">
+                            <h4>Miembros Activos (Dirigentes)</h4>
+                            <div class="table-controls">
+                                <button type="button" class="btn-control" onclick="importDirigentesFrom05A()" title="Carga los dirigentes ingresados en la pestaña Solicitud (05-A)">Importar de 05-A</button>
+                                <button type="button" class="btn-control" onclick="addActivoRow()">+ 1</button>
+                                <button type="button" class="btn-control" onclick="addMultipleRows('activo', 5)">+ 5</button>
+                                <button type="button" class="btn-control" onclick="addMultipleRows('activo', 10)">+ 10</button>
+                            </div>
+                        </div>
+                        <table class="nomina-table">
+                            <thead>
+                                <tr><th>Nombre y Apellido</th><th>DNI</th><th>Fecha Nac.</th><th>Edad</th><th>Formación</th><th style="width: 40px;"></th></tr>
+                            </thead>
+                            <tbody id="b-activos-body">
+                            </tbody>
+                        </table>
+                        <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem;">Total Dirigentes: <span id="count-activos">0</span></div>
+
+                        <!-- MIEMBROS BENEFICIARIOS SECTION -->
+                        <div class="table-header-actions" style="margin-top: 3rem;">
+                            <h4>Miembros Beneficiarios</h4>
+                            <div class="table-controls">
+                                <button type="button" class="btn-control" onclick="addBeneficiarioRow()">+ 1</button>
+                                <button type="button" class="btn-control" onclick="addMultipleRows('benef', 5)">+ 5</button>
+                                <button type="button" class="btn-control" onclick="addMultipleRows('benef', 10)">+ 10</button>
+                                <button type="button" class="btn-control" onclick="addMultipleRows('benef', 20)">+ 20</button>
+                            </div>
+                        </div>
+                        <table class="nomina-table">
+                            <thead>
+                                <tr><th style="width: 30px;">#</th><th>Nombre y Apellido</th><th>DNI</th><th>Fecha Nac.</th><th>Edad</th><th>Progresión</th><th style="width: 40px;"></th></tr>
+                            </thead>
+                            <tbody id="b-benef-body">
+                            </tbody>
+                        </table>
+                        <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem;">Total Beneficiarios: <span id="count-benefs">0</span></div>
+                    </section>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn-primary" onclick="window.print()"><i class="fas fa-print"></i> Imprimir Formulario</button>
+                    <button type="button" class="btn-primary" style="background: var(--accent-color);" onclick="window.location.href='../index.html'">Volver</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PRINT LAYOUT -->
+        <div id="print-layout" class="print-only">
+            <!-- 05-A PAGE 1 -->
+            <div class="p-page">
+                <div class="p-header">
+                    <div style="font-weight: bold;">ASOCIACIÓN ARQUIDIOCESANA DE SCOUTISMO CATÓLICO ARGENTINO</div>
+                    <div style="font-size: 12pt; font-weight: bold; margin: 2pt 0;">A. A. S. C. A.</div>
+                    <div style="font-size: 7pt; font-style: italic;">Fundada por Decreto Canónico Nº 63/96 del 30/XI/96 - Arquidiócesis de Santa Fe de la Vera Cruz</div>
+                </div>
+                <div class="p-title-box">
+                    <div class="p-title">SOLICITUD DE ACAMPE</div>
+                    <div class="p-form-id">(Form. 05-A)</div>
+                </div>
+                <div style="text-align: right; margin-top: 10pt;" id="p-a-fecha-hoy">Santa Fe, ...... de ................................. del 20......</div>
+                
+                <p style="margin-top: 15pt;">Al Sr. JEFE SCOUT ARQUIDIOCESANO<br><strong>PRESENTE</strong></p>
+
+                <div class="p-box">
+                    <div class="p-row">Grupo Scout: <div class="p-val" id="p-a-grupo"></div></div>
+                    <div class="p-row">Fecha de Salida: <div class="p-val" id="p-a-f-salida"></div> Fecha de Regreso: <div class="p-val" id="p-a-f-regreso"></div></div>
+                    <div class="p-row">Lugar: <div class="p-val" id="p-a-lugar"></div> Localidad: <div class="p-val" id="p-a-localidad"></div></div>
+                    <div class="p-row">Pcia.: <div class="p-val" id="p-a-provincia"></div> País: Argentina Otros: <div class="p-val"></div></div>
+                    <div class="p-row">Propietario: <div class="p-val" id="p-a-propietario"></div> Tel.: <div class="p-val" id="p-a-tel"></div></div>
+                    <div class="p-row">Forma de llegar: <div class="p-val" style="height: 3em;" id="p-a-llegar"></div></div>
+                </div>
+
+                <div class="p-box">
+                    <div class="p-box-title">Seguro de Responsabilidad Civil</div>
+                    <div class="p-row">Compañía: <div class="p-val" id="p-s-rc-cia"></div> Nº de Póliza: <div class="p-val" id="p-s-rc-num"></div></div>
+                    <div class="p-row">Cantidad de Asegurados: <div class="p-val"></div> Vigencia: <div class="p-val" id="p-s-rc-vig"></div> Monto de la Póliza $: <div class="p-val"></div></div>
+                </div>
+
+                <div class="p-box">
+                    <div class="p-box-title">Seguro de Accidentes</div>
+                    <div class="p-row">Compañía: <div class="p-val" id="p-s-acc-cia"></div> Nº de Póliza: <div class="p-val" id="p-s-acc-num"></div></div>
+                    <div class="p-row">Cantidad de Asegurados: <div class="p-val"></div> Vigencia: <div class="p-val" id="p-s-acc-vig"></div> Monto de la Póliza $: <div class="p-val"></div></div>
+                </div>
+
+                <div id="p-ramas-05a-container">
+                    <!-- Dynamic branches for print -->
+                </div>
+
+                <div class="p-box" style="margin-top: 20pt;">
+                    <strong>Observaciones:</strong>
+                    <div class="p-val" style="min-height: 40pt;" id="p-a-obs"></div>
+                </div>
+
+                <p style="font-size: 8pt; margin-top: 10pt;">Declaramos que todos los miembros comprendidos en esta solicitud han cumplimentado su ficha médica personal, poseen autorización escrita de sus Padres (si son menores de edad) y se encuentran cubiertos por un seguro.</p>
+
+                <div style="margin-top: 30pt; display: grid; grid-template-columns: 1fr 1fr; gap: 40pt; text-align: center; font-size: 8pt;">
+                    <div><div style="border-top: 1px solid #000; margin-top: 20pt;">Jefe de Grupo</div><div class="p-val" style="height: 12pt; margin-top: 5pt; border: none;">Aclaración</div></div>
+                    <div><div style="border-top: 1px solid #000; margin-top: 20pt;">Director del Grupo</div><div class="p-val" style="height: 12pt; margin-top: 5pt; border: none;">Aclaración</div></div>
+                </div>
+            </div>
+
+            <!-- 05-B PAGE -->
+            <div class="p-page">
+                <div class="p-header">
+                    <div style="font-weight: bold;">ASOCIACIÓN ARQUIDIOCESANA DE SCOUTISMO CATÓLICO ARGENTINO</div>
+                </div>
+                <div class="p-title-box">
+                    <div class="p-title">NOMINA COMPLETA DE ACAMPANTES</div>
+                    <div class="p-form-id">(Form. 05-B)</div>
+                </div>
+                <div style="margin-top: 5pt; font-weight: bold;">GRUPO SCOUT: <span id="pb-a-grupo"></span></div>
+                
+                <h4 style="margin: 10pt 0 5pt 0;">MIEMBROS ACTIVOS:</h4>
+                <table class="p-table" id="p-activos-print" style="margin-bottom: 20pt;">
+                    <thead><tr><th>Apellido y Nombre</th><th>D.N.I.</th><th>Fecha Nac.</th><th>Edad</th><th>Nivel Formación</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+
+                <h4 style="margin: 10pt 0 5pt 0;">MIEMBROS BENEFICIARIOS:</h4>
+                <table class="p-table" id="p-benef-print" style="margin-bottom: 20pt;">
+                    <thead><tr><th style="width: 20pt;">№</th><th>Apellido y Nombre</th><th>D.N.I.</th><th>Fecha Nac.</th><th>Edad</th><th>Progresión</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+
+                <div style="margin-top: 20pt; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10pt; text-align: center; font-size: 8pt;">
+                    <div><div style="border-top: 1px solid #000; margin-top: 30pt;">Jefe de Rama</div></div>
+                    <div><div style="border-top: 1px solid #000; margin-top: 30pt;">Jefe de Grupo</div></div>
+                    <div><div style="border-top: 1px solid #000; margin-top: 30pt;">Director del Grupo</div></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const ramasData = [
+            { id: 'ai', label: 'Rama Arco Iris', part: 'Lobatos', grp: 'Seisenas' },
+            { id: 'lo', label: 'Rama Lobato', part: 'Lobatos', grp: 'Seisenas' },
+            { id: 'cs', label: 'Rama Comunidad Scout', part: 'Scouts', grp: 'Patrullas' },
+            { id: 'ts', label: 'Rama Tropa Scout', part: 'Scouts', grp: 'Patrullas' },
+            { id: 'cr', label: 'Rama Comunidad Raider', part: 'Raiders', grp: 'Patrullas' },
+            { id: 'tr', label: 'Rama Tropa Raider', part: 'Raiders', grp: 'Patrullas' },
+            { id: 'cv', label: 'Rama Comunidad Rover', part: 'Rovers', grp: 'Equipos' },
+            { id: 'cl', label: 'Rama Clan Rover', part: 'Rovers', grp: 'Equipos' }
+        ];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        function initRamas() {
+            const container = document.getElementById('ramas-container-05a');
+            ramasData.forEach(rama => {
+                const html = `
+                    <div class="rama-box" id="rama-ui-${rama.id}" style="border: 1px solid rgba(46,125,50,0.2); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem; color: var(--primary-color);">${rama.label}</h3>
+                        <div class="input-grid" style="margin-bottom: 1rem;">
+                            <div class="field"><label>Cantidad de ${rama.part}</label><input type="text" class="r-part"></div>
+                            <div class="field"><label>Cantidad de ${rama.grp}</label><input type="text" class="r-grp"></div>
+                        </div>
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Dirigentes</h4>
+                        <table class="nomina-table">
+                            <thead><tr><th>Cargo</th><th>Nombre</th><th>Edad</th><th>Nivel Form.</th><th style="width: 40px;"></th></tr></thead>
+                            <tbody class="r-dirigentes-body"></tbody>
+                        </table>
+                        <button type="button" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.8rem; margin-top: 0.5rem;" onclick="addDirigenteRow('${rama.id}')">+ Dirigente</button>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+                addDirigenteRow(rama.id); // Add one default row
+            });
+        }
+
+        function generateNominaRows() {
+            const actifsTable = document.getElementById('b-activos-body');
+            const benefsTable = document.getElementById('b-benef-body');
+            
+            // Add 3 default rows for active members if empty
+            if (actifsTable.children.length === 0) {
+                for (let i = 0; i < 3; i++) addActivoRow();
+            }
+            
+            // Add 10 default rows for beneficiaries if empty
+            if (benefsTable.children.length === 0) {
+                for (let i = 0; i < 10; i++) addBeneficiarioRow();
+            }
+        }
+
+        function addMultipleRows(type, count) {
+            for (let i = 0; i < count; i++) {
+                if (type === 'activo') addActivoRow();
+                else if (type === 'benef') addBeneficiarioRow();
+            }
+        }
+
+        function clearNomina() {
+            if (confirm('¿Estás seguro de que deseas limpiar toda la nómina? Se perderán todos los datos ingresados en esta pestaña.')) {
+                document.getElementById('b-activos-body').innerHTML = '';
+                document.getElementById('b-benef-body').innerHTML = '';
+                generateNominaRows();
+                localStorage.setItem('aasca_acampe_data_v2', JSON.stringify(collectAllData()));
+            }
+        }
+
+        function importDirigentesFrom05A() {
+            const data = collectAllData();
+            const ativosBody = document.getElementById('b-activos-body');
+            let addedCount = 0;
+
+            // Collect all unique names from branches
+            const branchDirigentes = [];
+            for (const ramaId in data.ramas) {
+                data.ramas[ramaId].dirigentes.forEach(d => {
+                    if (d.nom.trim()) {
+                        branchDirigentes.push(d);
+                    }
+                });
+            }
+
+            if (branchDirigentes.length === 0) {
+                alert('No se encontraron dirigentes con nombre en la pestaña Solicitud (05-A).');
+                return;
+            }
+
+            // Ask if they want to append or overwrite
+            const mode = confirm('¿Desea agregar estos dirigentes a la lista existente? (Cancelar para limpiar la lista antes de importar)');
+            if (!mode) {
+                ativosBody.innerHTML = '';
+            }
+
+            branchDirigentes.forEach(d => {
+                // Name, DNI (empty), F.Nac (empty), Edad, Niv
+                addActivoRow([d.nom, '', '', d.edad, d.niv]);
+                addedCount++;
+            });
+
+            alert(`Sincronización completada: se agregaron ${addedCount} dirigentes.`);
+            localStorage.setItem('aasca_acampe_data_v2', JSON.stringify(collectAllData()));
+        }
+
+        function addDirigenteRow(ramaId, data = null) {
+            const tbody = document.querySelector(`#rama-ui-${ramaId} .r-dirigentes-body`);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="rd-cargo" placeholder="Jefe/Ayudante"></td>
+                <td><input type="text" class="rd-nom"></td>
+                <td style="width: 60px;"><input type="text" class="rd-edad"></td>
+                <td><input type="text" class="rd-niv"></td>
+                <td><button type="button" class="btn-danger" style="background: none; border: none; color: red;" onclick="this.closest('tr').remove()">×</button></td>
+            `;
+            tbody.appendChild(tr);
+            if(data) {
+                tr.querySelector('.rd-cargo').value = data.cargo || '';
+                tr.querySelector('.rd-nom').value = data.nom || '';
+                tr.querySelector('.rd-edad').value = data.edad || '';
+                tr.querySelector('.rd-niv').value = data.niv || '';
+            }
+        }
+
+        function addActivoRow(data = null) {
+            const tbody = document.getElementById('b-activos-body');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="na-nom"></td>
+                <td><input type="text" class="na-dni"></td>
+                <td><input type="text" class="na-f-nac"></td>
+                <td><input type="text" class="na-edad"></td>
+                <td><input type="text" class="na-niv"></td>
+                <td><button type="button" class="btn-danger" style="background:none;border:none;color:red;" onclick="this.closest('tr').remove();updateNominaCounters()">×</button></td>
+            `;
+            tbody.appendChild(tr);
+            if(data && Array.isArray(data)) {
+                const inputs = tr.querySelectorAll('input');
+                data.forEach((v, i) => inputs[i] && (inputs[i].value = v));
+            }
+            updateNominaCounters();
+        }
+
+        function addBeneficiarioRow(data = null) {
+            const tbody = document.getElementById('b-benef-body');
+            const count = tbody.querySelectorAll('tr').length + 1;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="row-number">${count}</td>
+                <td><input type="text" class="nb-nom"></td>
+                <td><input type="text" class="nb-dni"></td>
+                <td><input type="text" class="nb-f-nac"></td>
+                <td><input type="text" class="nb-edad"></td>
+                <td><input type="text" class="nb-prog"></td>
+                <td><button type="button" class="btn-danger" style="background:none;border:none;color:red;" onclick="this.closest('tr').remove();renumberBeneficiarios();updateNominaCounters()">×</button></td>
+            `;
+            tbody.appendChild(tr);
+            if(data && Array.isArray(data)) {
+                const inputs = tr.querySelectorAll('input');
+                data.forEach((v, i) => inputs[i] && (inputs[i].value = v));
+            }
+            updateNominaCounters();
+        }
+
+        function renumberBeneficiarios() {
+            document.querySelectorAll('#b-benef-body tr').forEach((tr, i) => {
+                const numEl = tr.querySelector('.row-number');
+                if(numEl) numEl.innerText = i + 1;
+            });
+        }
+
+        function updateNominaCounters() {
+            const activeCount = document.querySelectorAll('#b-activos-body tr').length;
+            const benefCount = document.querySelectorAll('#b-benef-body tr').length;
+            
+            const activeEl = document.getElementById('count-activos');
+            const benefEl = document.getElementById('count-benefs');
+            
+            if(activeEl) activeEl.innerText = activeCount;
+            if(benefEl) benefEl.innerText = benefCount;
+        }
+
+        window.onbeforeprint = () => {
+            // Map 05-A General
+            const ids = ['a-grupo', 'a-fecha-hoy', 'a-f-salida', 'a-f-regreso', 'a-localidad', 'a-lugar', 'a-provincia', 'a-propietario', 'a-tel', 'a-llegar', 's-rc-cia', 's-rc-num', 's-rc-vig', 's-acc-cia', 's-acc-num', 's-acc-vig'];
+            ids.forEach(id => {
+                const val = document.getElementById(id).value || '.........................';
+                const pEl = document.getElementById(`p-${id}`);
+                if(pEl) pEl.innerText = val;
+            });
+
+            // Map Ramas to Print
+            const printRamasContainer = document.getElementById('p-ramas-05a-container');
+            printRamasContainer.innerHTML = '';
+            ramasData.forEach(rama => {
+                const ui = document.getElementById(`rama-ui-${rama.id}`);
+                const partVal = ui.querySelector('.r-part').value || '...';
+                const grpVal = ui.querySelector('.r-grp').value || '...';
+                
+                let ramaHtml = `
+                    <div class="p-box" style="page-break-inside: avoid;">
+                        <div class="p-box-title">${rama.label}</div>
+                        <div class="p-row">Cantidad de ${rama.part}: <div class="p-val">${partVal}</div> Cantidad de ${rama.grp}: <div class="p-val">${grpVal}</div></div>
+                        <table class="p-table">
+                            <thead><tr><th>Responsable</th><th style="width: 50%;">Nombre</th><th>Edad</th><th>Nivel Form.</th></tr></thead>
+                            <tbody>
+                `;
+                
+                let added = 0;
+                ui.querySelectorAll('.r-dirigentes-body tr').forEach(tr => {
+                    const cargo = tr.querySelector('.rd-cargo').value;
+                    const nom = tr.querySelector('.rd-nom').value;
+                    const edad = tr.querySelector('.rd-edad').value;
+                    const niv = tr.querySelector('.rd-niv').value;
+                    if(nom) {
+                        ramaHtml += `<tr><td>${cargo}</td><td>${nom}</td><td>${edad}</td><td>${niv}</td></tr>`;
+                        added++;
+                    }
+                });
+                
+                // Add empty rows if needed to maintain structure
+                for(let i = added; i < 2; i++) {
+                     ramaHtml += `<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>`;
+                }
+
+                ramaHtml += `</tbody></table></div>`;
+                printRamasContainer.insertAdjacentHTML('beforeend', ramaHtml);
+            });
+
+            // Map 05-B values
+            document.getElementById('pb-a-grupo').innerText = document.getElementById('a-grupo').value;
+
+            // Fill print tables for 05-B
+            const actifsTablePrint = document.getElementById('p-activos-print').getElementsByTagName('tbody')[0];
+            actifsTablePrint.innerHTML = '';
+            document.querySelectorAll('#b-activos-body tr').forEach(tr => {
+                const inputs = tr.querySelectorAll('input');
+                const name = inputs[0].value;
+                if(name) {
+                    const pTr = document.createElement('tr');
+                    let rowHtml = '';
+                    inputs.forEach(i => rowHtml += `<td>${i.value}</td>`);
+                    pTr.innerHTML = rowHtml;
+                    actifsTablePrint.appendChild(pTr);
+                }
+            });
+
+            const benefsTablePrint = document.getElementById('p-benef-print').getElementsByTagName('tbody')[0];
+            benefsTablePrint.innerHTML = '';
+            let bCount = 1;
+            document.querySelectorAll('#b-benef-body tr').forEach(tr => {
+                const inputs = tr.querySelectorAll('input');
+                const name = inputs[0].value;
+                if(name) {
+                    const pTr = document.createElement('tr');
+                    let rowHtml = `<td>${bCount++}</td>`;
+                    inputs.forEach(i => rowHtml += `<td>${i.value}</td>`);
+                    pTr.innerHTML = rowHtml;
+                    benefsTablePrint.appendChild(pTr);
+                }
+            });
+        };
+
+        function collectAllData() {
+            const data = {
+                general: {},
+                ramas: {}
+            };
+            
+            // General info
+            ['a-grupo', 'a-fecha-hoy', 'a-f-salida', 'a-f-regreso', 'a-localidad', 'a-lugar', 'a-provincia', 'a-propietario', 'a-tel', 'a-llegar', 's-rc-cia', 's-rc-num', 's-rc-vig', 's-acc-cia', 's-acc-num', 's-acc-vig'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) data.general[id] = el.value;
+            });
+
+            // Ramas
+            ramasData.forEach(rama => {
+                const ui = document.getElementById(`rama-ui-${rama.id}`);
+                if(ui) {
+                    data.ramas[rama.id] = {
+                        part: ui.querySelector('.r-part').value,
+                        grp: ui.querySelector('.r-grp').value,
+                        dirigentes: []
+                    };
+                    ui.querySelectorAll('.r-dirigentes-body tr').forEach(tr => {
+                        data.ramas[rama.id].dirigentes.push({
+                            cargo: tr.querySelector('.rd-cargo').value,
+                            nom: tr.querySelector('.rd-nom').value,
+                            edad: tr.querySelector('.rd-edad').value,
+                            niv: tr.querySelector('.rd-niv').value
+                        });
+                    });
+                }
+            });
+
+            // 05-B Tab
+            data.nomina = {
+                activos: [],
+                benefs: []
+            };
+            document.querySelectorAll('#b-activos-body tr').forEach(tr => {
+                const inputs = tr.querySelectorAll('input');
+                data.nomina.activos.push(Array.from(inputs).map(i => i.value));
+            });
+            document.querySelectorAll('#b-benef-body tr').forEach(tr => {
+                const inputs = tr.querySelectorAll('input');
+                data.nomina.benefs.push(Array.from(inputs).map(i => i.value));
+            });
+
+            return data;
+        }
+
+        window.onload = () => {
+            initRamas();
+            
+            const saved = localStorage.getItem('aasca_acampe_data_v2');
+            if(saved) {
+                const data = JSON.parse(saved);
+                // Load general
+                for(const id in data.general) {
+                    const el = document.getElementById(id);
+                    if(el) el.value = data.general[id];
+                }
+                // Load ramas
+                for(const ramaId in data.ramas) {
+                    const rama = data.ramas[ramaId];
+                    const ui = document.getElementById(`rama-ui-${ramaId}`);
+                    if(ui) {
+                        ui.querySelector('.r-part').value = rama.part;
+                        ui.querySelector('.r-grp').value = rama.grp;
+                        const tbody = ui.querySelector('.r-dirigentes-body');
+                        tbody.innerHTML = '';
+                        rama.dirigentes.forEach(d => addDirigenteRow(ramaId, d));
+                    }
+                }
+                // Load nomina
+                if(data.nomina) {
+                    const actifsBody = document.getElementById('b-activos-body');
+                    actifsBody.innerHTML = '';
+                    data.nomina.activos.forEach(vals => addActivoRow(vals));
+                    
+                    const benefBody = document.getElementById('b-benef-body');
+                    benefBody.innerHTML = '';
+                    data.nomina.benefs.forEach(vals => addBeneficiarioRow(vals));
+                }
+            }
+
+            // Always ensure some empty rows exist if none loaded
+            generateNominaRows();
+            
+            const form = document.getElementById('camping-form');
+            form.addEventListener('input', () => {
+                localStorage.setItem('aasca_acampe_data_v2', JSON.stringify(collectAllData()));
+            });
+        };
+    </script>
+</body>
+</html>

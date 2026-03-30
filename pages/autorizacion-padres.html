@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autorización de Padres (Form. 07-A) - AASCA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        .form-container { max-width: 900px; margin: 2rem auto; background: var(--card-bg); padding: 3rem; border-radius: 24px; box-shadow: var(--shadow); }
+        .form-header { text-align: center; margin-bottom: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 1rem; }
+        .form-section { margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; color: var(--primary-color); border-left: 4px solid var(--primary-color); padding-left: 1rem; margin-bottom: 1.5rem; font-weight: 700; }
+        
+        .input-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .field { display: flex; flex-direction: column; gap: 0.5rem; }
+        .field.full { grid-column: span 2; }
+        
+        label { font-size: 0.85rem; font-weight: 600; opacity: 0.9; }
+        input { padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(46, 125, 50, 0.2); background: var(--bg-color); color: var(--text-color); font-family: inherit; width: 100%; }
+        
+        .actions { position: sticky; bottom: 2rem; display: flex; justify-content: center; gap: 1rem; margin-top: 3rem; z-index: 100; }
+        .btn-primary { background: var(--primary-color); color: white; padding: 1rem 2rem; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; box-shadow: var(--shadow); }
+        .btn-primary:hover { transform: translateY(-3px); filter: brightness(1.1); }
+        
+        /* Print Replica */
+        .print-only { display: none; }
+        @media print {
+            @page { size: A4; margin: 10mm; }
+            .print-only { display: block !important; }
+            .form-container, header, footer, .actions { display: none !important; }
+            html, body { background: white !important; margin: 0; padding: 0; font-family: 'Times New Roman', serif; }
+            .p-page { padding: 10mm; line-height: 1.6; }
+            .p-header { text-align: center; margin-bottom: 20px; }
+            .p-title-row { display: flex; justify-content: space-between; align-items: baseline; margin: 20px 0; }
+            .p-title { font-size: 14pt; font-weight: bold; flex: 1; text-align: center; margin-left: 100px;}
+            .p-form-id { font-size: 12pt; font-weight: bold; width: 100px; text-align: right; }
+            .p-body { text-align: justify; font-size: 11pt; }
+            .p-val { border-bottom: 1px dotted #000; padding: 0 4px; display: inline-block; min-width: 40px; text-align: center;}
+            .p-val-block { border-bottom: 1px dotted #000; padding: 0 4px; display: block; width: 100%; margin: 4px 0; min-height: 1.5em; text-align: center; }
+            .p-signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 60px; text-align: center; }
+            .p-sig-line { border-top: 1px solid #000; margin: 0 auto; width: 80%; padding-top: 5px; font-size: 9pt;}
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <div class="header-top container"><span class="official-text">ASOCIACIÓN ARQUIDIOCESANA DE SCOUTISMO CATÓLICO ARGENTINO</span></div>
+        <nav class="container">
+            <div class="logo">
+                <a href="../index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem;">
+                    <span class="logo-icon">⚜️</span>
+                    <div class="logo-text"><span class="logo-main">A.A.S.C.A.</span><span class="logo-sub">Gestión de Formularios</span></div>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Autorización de Padres / Tutor</h1>
+                <p>(Form. 07-A)</p>
+            </div>
+
+            <form id="ap-form">
+                <section class="form-section">
+                    <h2 class="section-title">Información de la Actividad</h2>
+                    <div class="input-grid">
+                        <div class="field full">
+                            <label>Nombre del Evento / Campamento / Salida</label>
+                            <input type="text" id="ap-evento" placeholder="Ej: Campamento de Verano 2026">
+                        </div>
+                        <div class="field">
+                            <label>Días / Fecha</label>
+                            <input type="text" id="ap-evento-dias" placeholder="Ej: 15 al 20 de Enero">
+                        </div>
+                        <div class="field">
+                            <label>Lugar</label>
+                            <input type="text" id="ap-evento-lugar" placeholder="Ej: Valle de Calamuchita">
+                        </div>
+                        <div class="field">
+                            <label>Localidad (de la actividad)</label>
+                            <input type="text" id="ap-evento-localidad" placeholder="Ej: Villa General Belgrano">
+                        </div>
+                        <div class="field">
+                            <label>Grupo Scout</label>
+                            <input type="text" id="ap-evento-grupo" placeholder="Ej: Grupo 123 San Martín">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2 class="section-title">Datos del Tutor (Padre/Madre/Tutor)</h2>
+                    <div class="input-grid">
+                        <div class="field full">
+                            <label>Nombre Completo</label>
+                            <input type="text" id="ap-tutor-nombre">
+                        </div>
+                        <div class="field">
+                            <label>Documento Nacional de Identidad</label>
+                            <input type="text" id="ap-tutor-dni">
+                        </div>
+                        <div class="field">
+                            <label>Nacionalidad</label>
+                            <input type="text" id="ap-tutor-nacionalidad">
+                        </div>
+                        <div class="field">
+                            <label>Fecha de Nacimiento</label>
+                            <input type="text" id="ap-tutor-nacimiento" placeholder="DD/MM/AAAA">
+                        </div>
+                        <div class="field full">
+                            <label>Domicilio</label>
+                            <input type="text" id="ap-tutor-domicilio">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2 class="section-title">Datos del Hijo/a (Participante)</h2>
+                    <div class="input-grid">
+                        <div class="field full">
+                            <label>Nombre Completo del Hijo/a</label>
+                            <input type="text" id="ap-hijo-nombre">
+                        </div>
+                        <div class="field">
+                            <label>Documento Nacional de Identidad</label>
+                            <input type="text" id="ap-hijo-dni">
+                        </div>
+                        <div class="field">
+                            <label>Nacionalidad</label>
+                            <input type="text" id="ap-hijo-nacionalidad">
+                        </div>
+                        <div class="field full">
+                            <label>Domicilio del Hijo/a</label>
+                            <input type="text" id="ap-hijo-domicilio">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2 class="section-title">Lugar y Fecha de Firma</h2>
+                    <div class="input-grid">
+                        <div class="field">
+                            <label>Localidad</label>
+                            <input type="text" id="ap-localidad" placeholder="Ej: Santa Fe">
+                        </div>
+                        <div class="field">
+                            <label>Partido / Departamento</label>
+                            <input type="text" id="ap-departamento" placeholder="Ej: La Capital">
+                        </div>
+                        <div class="field">
+                            <label>Provincia</label>
+                            <input type="text" id="ap-provincia" placeholder="Ej: Santa Fe">
+                        </div>
+                        <div class="field">
+                            <label>Día / Mes / Año</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="ap-dia" placeholder="DD" style="width: 60px;">
+                                <input type="text" id="ap-mes" placeholder="MM" style="width: 60px;">
+                                <input type="text" id="ap-anio" placeholder="AAAA" style="width: 100px;">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="actions">
+                    <button type="button" class="btn-primary" onclick="prepareAndPrint()"><i class="fas fa-print"></i> Imprimir Autorización</button>
+                    <button type="button" class="btn-primary" style="background: var(--accent-color);" onclick="window.location.href='../index.html'">Volver</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="print-layout" class="print-only">
+            <div class="p-page">
+                <div class="p-header">
+                    <div style="font-size: 12pt; font-weight: bold; text-transform: uppercase;">Asociación Arquidiocesana de Scoutismo Católico Argentino</div>
+                    <div style="font-size: 14pt; font-weight: bold; margin: 4pt 0;">A. A. S. C. A.</div>
+                    <div style="font-size: 8pt; font-style: italic; border-bottom: 2px double #000; padding-bottom: 4pt;">Fundada por Decreto Canónico Nº 63/96 del 30/XI/96 - Arquidiócesis de Santa Fe de la Vera Cruz</div>
+                </div>
+
+                <div class="p-title-row">
+                    <div class="p-title">AUTORIZACION DE PADRES / TUTOR</div>
+                    <div class="p-form-id">(Form. 07-A)</div>
+                </div>
+                <div style="text-align: center; font-size: 9pt; margin-bottom: 20pt;">Completar con letra imprenta clara</div>
+
+                <div class="p-body">
+                    En la localidad de <span class="p-val" id="v-localidad" style="min-width: 150px;"></span>, partido / departamento de <span class="p-val" id="v-departamento" style="min-width: 200px;"></span>
+                    de la provincia de <span class="p-val" id="v-provincia" style="min-width: 150px;"></span>, a los <span class="p-val" id="v-dia" style="min-width: 30px;"></span> días del mes de <span class="p-val" id="v-mes" style="min-width: 100px;"></span>
+                    del año <span class="p-val" id="v-anio" style="min-width: 60px;"></span>, yo, <span class="p-val" id="v-tutor-nombre" style="min-width: 300px;"></span> de nacionalidad <span class="p-val" id="v-tutor-nacionalidad" style="min-width: 120px;"></span>, nacido el <span class="p-val" id="v-tutor-nacimiento" style="min-width: 100px;"></span>
+                    con Documento Nacional de Identidad <span class="p-val" id="v-tutor-dni" style="min-width: 120px;"></span> y con domicilio en
+                    <span class="p-val-block" id="v-tutor-domicilio"></span> OTORGO AUTORIZACIÓN a favor de mi hijo/a
+                    <span class="p-val-block" id="v-hijo-nombre"></span>, menor de edad, sobre quien ejerzo la RESPONSABILIDAD PARENTAL de
+                    nacionalidad <span class="p-val" id="v-hijo-nacionalidad" style="min-width: 150px;"></span>, y Documento Nacional de Identidad <span class="p-val" id="v-hijo-dni" style="min-width: 120px;"></span>, con
+                    domicilio en <span class="p-val" id="v-hijo-domicilio" style="min-width: 350px;"></span>, para que participe del <span class="p-val" id="v-evento" style="min-width: 300px;"></span>
+                    organizado/a por la Asociación Arquidiocesana de Scoutismo Católico Argentino, los días <span class="p-val" id="v-evento-dias" style="min-width: 150px;"></span> en <span class="p-val" id="v-evento-lugar" style="min-width: 200px;"></span>,
+                    en la localidad de <span class="p-val" id="v-evento-localidad" style="min-width: 180px;"></span>, acompañado de miembros activos afiliados del Grupo Scout <span class="p-val" id="v-evento-grupo" style="min-width: 180px;"></span> pertenecientes a
+                    la A.A.S.C.A (Asociación Arquidiocesana de Scoutismo Católico Argentino), todos mayores de edad y con reconocimiento válido para
+                    efectuar este tipo de actividades. Asimismo, he decidido: 1) Conociendo la institución antes mencionada, a asumir la
+                    responsabilidad de la participación del / la menor en dichas actividades. 2) Autorizar a los responsables de las actividades, a tomar,
+                    en caso de accidente o enfermedad todas las medidas necesarias para salvaguardar la integridad y la salud del / la menor. 3)
+                    Otorgar autorización para realizar cualquier intervención quirúrgica que así lo requiera la integridad y la salud del / la menor, 4)
+                    Efectuar las certificaciones del caso, en la eventualidad que la actividad a realizar así lo requiera por imperio de la normativa legal
+                    vigente en nuestro país. ----------<br>
+                    La presente autorización implica amplia conformidad para que se realicen todos los trámites y gestiones inherentes a cada viaje, 
+                    ante las autoridades pertinentes y empresas de transporte, comprometiéndose en caso de revocación a hacerlo saber a las 
+                    autoridades correspondientes.
+                </div>
+
+                <div class="p-signatures">
+                    <div>
+                        <div class="p-sig-line">Firma de la Madre/Padre o Tutor</div>
+                    </div>
+                    <div>
+                        <div class="p-sig-line">Aclaración y DNI</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function prepareAndPrint() {
+            // Map inputs to print values
+            const mapping = {
+                'ap-localidad': 'v-localidad',
+                'ap-departamento': 'v-departamento',
+                'ap-provincia': 'v-provincia',
+                'ap-dia': 'v-dia',
+                'ap-mes': 'v-mes',
+                'ap-anio': 'v-anio',
+                'ap-tutor-nombre': 'v-tutor-nombre',
+                'ap-tutor-dni': 'v-tutor-dni',
+                'ap-tutor-nacionalidad': 'v-tutor-nacionalidad',
+                'ap-tutor-nacimiento': 'v-tutor-nacimiento',
+                'ap-tutor-domicilio': 'v-tutor-domicilio',
+                'ap-hijo-nombre': 'v-hijo-nombre',
+                'ap-hijo-dni': 'v-hijo-dni',
+                'ap-hijo-nacionalidad': 'v-hijo-nacionalidad',
+                'ap-hijo-domicilio': 'v-hijo-domicilio',
+                'ap-evento': 'v-evento',
+                'ap-evento-dias': 'v-evento-dias',
+                'ap-evento-lugar': 'v-evento-lugar',
+                'ap-evento-localidad': 'v-evento-localidad',
+                'ap-evento-grupo': 'v-evento-grupo'
+            };
+
+            for (const [inputId, printId] of Object.entries(mapping)) {
+                const val = document.getElementById(inputId).value || '.................................................';
+                document.getElementById(printId).innerText = val;
+            }
+
+            window.print();
+        }
+
+        // Auto-save logic
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const data = {};
+                inputs.forEach(i => data[i.id] = i.value);
+                localStorage.setItem('aasca_ap_data', JSON.stringify(data));
+            });
+        });
+
+        window.onload = () => {
+            const saved = localStorage.getItem('aasca_ap_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                for (const id in data) {
+                    const el = document.getElementById(id);
+                    if (el) el.value = data[id];
+                }
+            }
+        };
+    </script>
+</body>
+</html>
