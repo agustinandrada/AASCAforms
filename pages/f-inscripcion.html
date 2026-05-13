@@ -82,9 +82,16 @@
                 <section class="form-section">
                     <h2 class="section-title">Datos del Grupo</h2>
                     <div class="input-group">
-                        <div class="field"><label>Nº Legajo</label><input type="text" name="legajo"></div>
-                        <div class="field"><label>Sección</label><input type="text" name="seccion"></div>
-                        <div class="field"><label>Grupo Scout</label><input type="text" name="grupo-nombre"></div>
+                        <div class="field"><label>Nº Legajo</label><input style="background-color: #dbdbdb;" placeholder="N / A" type="text" name="legajo" disabled></div>
+                        <div class="field"><label>Sección</label>
+                        <select name="seccion">
+                            <option value="" selected disabled>Seleccione una opción</option>
+                            <option value="Menor">Menor</option>
+                            <option value="Scout">Scout</option>
+                            <option value="Raider">Raider</option>
+                            <option value="Rover">Rover</option>
+                        </select></div>
+                        <div class="field"><label>Grupo Scout</label><input type="text" name="grupo-nombre" value="Ntra. Sra. De Lujan" disabled></div>
                     </div>
                 </section>
 
@@ -246,6 +253,24 @@ SUS OBLIGACIONES.</p>
         </div>
     </main>
 
+    <script>
+        function prepareAndPrint() {
+            const form = document.getElementById('enrollment-form');
+            const printLayout = document.getElementById('print-layout');
+            // Map form values to print layout
+            const fields = [
+                'legajo', 'seccion', 'grupo-nombre', 's-nombre', 's-edad', 's-nac', 's-lugar-nac', 's-nacionalidad',
+                's-dni', 's-sangre', 's-domicilio', 's-tel-fijo', 's-tel-cel', 's-localidad', 's-provincia',
+                's-email', 'p-nombre', 'p-edad', 'p-dni', 'p-profesion',
+                'm-nombre', 'm-edad', 'm-dni', 'm-profesion'
+            ];
+            fields.forEach(field => {
+                const input = form.querySelector(`[name="${field}"]`);
+                const printField = document.getElementById(`pr-${field}`);
+                if (input && printField) {
+                    printField.textContent = input.value || ' ';
+                }
+            });
             window.print();
         }
     </script>
