@@ -13,6 +13,9 @@
         (function() {
             const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             document.documentElement.className = savedTheme + '-mode';
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.className = savedTheme + '-mode';
+            });
         })();
     </script>
 </head>

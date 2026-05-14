@@ -6,12 +6,19 @@
 (function() {
     // 1. Theme Logic (runs immediately to avoid flash)
     const applyTheme = (theme) => {
+        const root = document.documentElement;
+        const body = document.body;
+
         if (theme === 'dark') {
-            document.body.classList.remove('light-mode');
-            document.body.classList.add('dark-mode');
+            root.classList.remove('light-mode');
+            root.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            body.classList.add('dark-mode');
         } else {
-            document.body.classList.remove('dark-mode');
-            document.body.classList.add('light-mode');
+            root.classList.remove('dark-mode');
+            root.classList.add('light-mode');
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
         }
     };
 
